@@ -14,7 +14,7 @@ namespace ArchBench.Server
             Properties.Settings.Default.Reload();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ArchServerForm());
+            Application.Run(new MainForm());
             Properties.Settings.Default.Save();
         }
     }

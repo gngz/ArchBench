@@ -1,6 +1,6 @@
 ﻿namespace ArchBench.Server
 {
-    partial class ArchServerForm
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ArchServerForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -367,7 +367,6 @@
             this.mRegisterServer.RightToLeftAutoMirrorImage = true;
             this.mRegisterServer.Size = new System.Drawing.Size(23, 22);
             this.mRegisterServer.Text = "Register Server";
-            this.mRegisterServer.Click += new System.EventHandler(this.OnRegistServer);
             // 
             // mServerAddress
             // 
@@ -399,7 +398,7 @@
             this.mPluginsTool.Name = "mPluginsTool";
             this.mPluginsTool.Size = new System.Drawing.Size(23, 22);
             this.mPluginsTool.Text = "Add Plugin";
-            this.mPluginsTool.Click += new System.EventHandler(this.OnPlugIn);
+            this.mPluginsTool.Click += new System.EventHandler(this.OnAddPlugIn);
             // 
             // mRemovePlugin
             // 
@@ -423,7 +422,7 @@
             this.mClearOutput.Name = "mClearOutput";
             this.mClearOutput.Size = new System.Drawing.Size(23, 22);
             this.mClearOutput.Text = "Clear";
-            this.mClearOutput.Click += new System.EventHandler(this.OnEraseOutput);
+            this.mClearOutput.Click += new System.EventHandler(this.OnClearConsole);
             // 
             // statusStrip1
             // 
