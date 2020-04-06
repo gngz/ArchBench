@@ -2,14 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ArchBench.Server.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Service" Type="System.String" Scope="User">
-      <Value Profile="(Default)">info</Value>
-    </Setting>
-    <Setting Name="Address" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.0.100</Value>
-    </Setting>
-    <Setting Name="Port" Type="System.String" Scope="User">
-      <Value Profile="(Default)">8081</Value>
+    <Setting Name="RemoteServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
   </Settings>
 </SettingsFile>
