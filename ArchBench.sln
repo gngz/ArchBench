@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlugIns", "PlugIns", "{5DF8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.Server", "ArchBench.Server\ArchBench.Server.csproj", "{6E27897A-D0AB-4F1F-92EF-F1079CF0416E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.PlugIns.Hello", "ArchBench.PlugIns.Hello\ArchBench.PlugIns.Hello.csproj", "{78E12531-12E0-4015-B9DF-862DBADEA23B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,10 +28,6 @@ Global
 		{6E27897A-D0AB-4F1F-92EF-F1079CF0416E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E27897A-D0AB-4F1F-92EF-F1079CF0416E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E27897A-D0AB-4F1F-92EF-F1079CF0416E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78E12531-12E0-4015-B9DF-862DBADEA23B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78E12531-12E0-4015-B9DF-862DBADEA23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78E12531-12E0-4015-B9DF-862DBADEA23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78E12531-12E0-4015-B9DF-862DBADEA23B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
