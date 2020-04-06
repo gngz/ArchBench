@@ -16,6 +16,7 @@ namespace ArchBench.Server
             Logger = new TextBoxLogger( mOutput );
             ModulePugIns = new ModulePlugIns( Logger );
         }
+
         public HttpServer.HttpServer Server { get; private set; }
         private ModulePlugIns        ModulePugIns { get; }
         private IArchBenchLogger     Logger { get; }
@@ -90,7 +91,7 @@ namespace ArchBench.Server
         }
 
         #endregion
-
+        
         private void OnExit(object sender, EventArgs e)
         {
             Server?.Stop();
@@ -101,17 +102,21 @@ namespace ArchBench.Server
         private void OnConnect(object sender, EventArgs e)
         {
             mConnectTool.Checked = ! mConnectTool.Checked;
-            if (mConnectTool.Checked)
+            if ( mConnectTool.Checked )
             {
                 Server = new HttpServer.HttpServer();
                 Server.Add( ModulePugIns );
                 Server.Start( IPAddress.Any, int.Parse( mPort.Text ) );
                 Logger.WriteLine( "Server online on port {0}", mPort.Text );
+
+                mConnectTool.Image = Properties.Resources.connect;
             }
             else
             {
                 Server.Stop();
                 Server = null;
+
+                mConnectTool.Image = Properties.Resources.disconnect;
             }
         }
 
@@ -119,37 +124,6 @@ namespace ArchBench.Server
         {
             var dialog = new PlugInsForm( ModulePugIns.PlugInsManager );
             dialog.ShowDialog();
-        }
-
-        private void OnRegistServer( object sender, EventArgs evt )
-        {
-            try 
-            {
-                TcpClient client = new TcpClient( mRemoteServerAddress.Text, 9000 );
-
-                Byte[] data = Encoding.ASCII.GetBytes( $"{( mRegistButton.Checked ? '+' : '-' )}{ GetServerIP() }-{ mPort.Text }" );         
-
-                NetworkStream stream = client.GetStream();
-                stream.Write( data, 0, data.Length );
-                stream.Close();        
- 
-                client.Close();         
-            } 
-            catch ( SocketException e ) 
-            {
-               Logger.WriteLine( "SocketException: {0}", e );
-            }
-
-        }
-
-        private static string GetServerIP()
-        {
-            IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName() );
-            foreach ( IPAddress ip in host.AddressList )
-            {
-                if ( ip.AddressFamily == AddressFamily.InterNetwork ) return ip.ToString();
-            }
-            return "0.0.0.0";        
         }
     }
 }
