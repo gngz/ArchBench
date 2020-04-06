@@ -9,16 +9,17 @@ namespace ArchBench.Server
     {
         public ModulePlugIns( IArchBenchLogger aLogger )
         {
-            Logger  = aLogger;
-            Manager = new PlugInsManager( this );
+            Logger = aLogger;
+            PlugInsManager = new PlugInsManager( this );
         }
 
         public IArchBenchLogger Logger { get; set; }
-        public IPlugInsManager  Manager { get; }
+
+        public IPlugInsManager PlugInsManager { get; }
 
         public override bool Process( IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession )
         {
-            foreach ( var plugin in Manager.PlugIns )
+            foreach ( var plugin in PlugInsManager.PlugIns )
             {
                 if ( ! plugin.Enabled ) continue;
                 if ( ! ( plugin is IArchBenchHttpPlugIn httpPlugIn ) ) continue;
