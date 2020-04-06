@@ -1,118 +1,129 @@
 ﻿using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
+using System.Net;
 using ArchBench.PlugIns;
 
 namespace ArchBench.Server
 {
     public partial class ArchServerForm : Form
     {
-        #region Fields
-        private HttpServer.HttpServer mServer;
-        private readonly IArchBenchLogger       mLogger;
-        private readonly ArchBenchPlugInsModule mPlugInsModule;
-        #endregion
 
         public ArchServerForm()
         {
             InitializeComponent();
-            mLogger = new TextBoxLogger( mOutput );
-            mPlugInsModule = new ArchBenchPlugInsModule( mLogger );
+            Logger = new TextBoxLogger( mOutput );
+            ModulePugIns = new ModulePlugIns( Logger );
         }
 
+        public HttpServer.HttpServer Server { get; private set; }
+        private ModulePlugIns        ModulePugIns { get; }
+        private IArchBenchLogger     Logger { get; }
+
+        #region Toolbar Double Click problem
+
+        private bool HandleFirstClick { get; set; } = false;
+
+        protected override void OnActivated( EventArgs e )
+        {
+            base.OnActivated( e );
+            if (HandleFirstClick)
+            {
+                var position = Cursor.Position;
+                var point = this.PointToClient(position);
+                var child = this.GetChildAtPoint(point);
+                while ( HandleFirstClick && child != null )
+                {
+                    if (child is ToolStrip toolStrip)
+                    {
+                        HandleFirstClick = false;
+                        point = toolStrip.PointToClient(position);
+                        foreach (var item in toolStrip.Items)
+                        {
+                            if (item is ToolStripItem toolStripItem && toolStripItem.Bounds.Contains(point))
+                            {
+                                if (item is ToolStripMenuItem tsMenuItem)
+                                {
+                                    tsMenuItem.ShowDropDown();
+                                }
+                                else
+                                {
+                                    toolStripItem.PerformClick();
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        child = child.GetChildAtPoint(point);
+                    }
+                }
+                HandleFirstClick = false;
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_ACTIVATE = 0x0006;
+            const int WA_CLICKACTIVE = 0x0002;
+            if (m.Msg == WM_ACTIVATE && Low16(m.WParam) == WA_CLICKACTIVE)
+            {
+                HandleFirstClick = true;
+            }
+            base.WndProc( ref m );
+        }
+
+        private static int GetIntUnchecked(IntPtr value)
+        {
+            return IntPtr.Size == 8 ? unchecked((int)value.ToInt64()) : value.ToInt32();
+        }
+
+        private static int Low16(IntPtr value)
+        {
+            return unchecked((short)GetIntUnchecked(value));
+        }
+
+        private static int High16(IntPtr value)
+        {
+            return unchecked((short)(((uint)GetIntUnchecked(value)) >> 16));
+        }
+
+        #endregion
+        
         private void OnExit(object sender, EventArgs e)
         {
-            if ( mServer != null ) mServer.Stop();
-            mPlugInsModule.PlugInManager.ClosePlugIns();
+            Server?.Stop();
+            ModulePugIns.PlugInsManager.Clear();
             Application.Exit();
         }
 
         private void OnConnect(object sender, EventArgs e)
         {
             mConnectTool.Checked = ! mConnectTool.Checked;
-            if (mConnectTool.Checked)
+            if ( mConnectTool.Checked )
             {
-                mServer = new HttpServer.HttpServer();
-                mServer.Add( new ArchServerModule( mLogger ) );
-                mServer.Add( mPlugInsModule );
-                mServer.Start( IPAddress.Any, int.Parse( mPort.Text ) );
+                Server = new HttpServer.HttpServer();
+                Server.Add( ModulePugIns );
+                Server.Start( IPAddress.Any, int.Parse( mPort.Text ) );
+                Logger.WriteLine( "Server online on port {0}", mPort.Text );
 
-                mLogger.WriteLine( String.Format( "Server online on port {0}", mPort.Text ) );
                 mConnectTool.Image = Properties.Resources.connect;
             }
             else
             {
-                mServer.Stop();
-                mServer = null;
-                mLogger.WriteLine( String.Format( "Server offline on port {0}", mPort.Text ) );
+                Server.Stop();
+                Server = null;
+
                 mConnectTool.Image = Properties.Resources.disconnect;
             }
         }
 
         private void OnPlugIn( object sender, EventArgs e )
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = true;
-            dialog.Filter = "Arch.Bench PlugIn File (*.dll)|*.dll";
-
-            if ( dialog.ShowDialog() == DialogResult.OK )
-            {
-                foreach ( var filename in dialog.FileNames )
-                {
-                    mPlugInsModule.PlugInManager.AddPlugIn( filename );
-                    mLogger.WriteLine( String.Format( "Added PlugIn from {0}",
-                        System.IO.Path.GetFileName( filename ) ) );
-                }
-            }
-        }
-
-        public static string GetLocalIP()
-        {
-            // Resolves a host name or IP address to an IPHostEntry instance.
-            // IPHostEntry - Provides a container class for Internet host address information. 
-            IPHostEntry IPHostEntry = Dns.GetHostEntry( Dns.GetHostName() );
-
-            // IPAddress class contains the address of a computer on an IP network. 
-            foreach ( IPAddress IPAddress in IPHostEntry.AddressList)
-            {
-                // InterNetwork indicates that an IP version 4 address is expected 
-                // when a Socket connects to an endpoint
-                if ( IPAddress.AddressFamily.ToString() != "InterNetwork" ) continue;
-                return IPAddress.ToString();
-            }
-            return @"127.0.0.1";
-        }
-
-        private void OnRegistServer( object sender, EventArgs evt )
-        {
-            try 
-            {
-                TcpClient client = new TcpClient( mServerAddress.Text, 9000 );
-
-                string address = GetLocalIP();
-                mLogger.WriteLine("LocalIP: {0}", address );
-                string message = String.Format( "{0}{1}{2}{3}{4}", mServerName.Text, '@', address, ':', mPort.Text );
-
-                Byte[] data = Encoding.ASCII.GetBytes( message );         
-
-                NetworkStream stream = client.GetStream();
-                stream.Write( data, 0, data.Length );
-                stream.Close();         
-                client.Close();
-
-                mRegisterServer.Image = Properties.Resources.link;
-            } 
-            catch ( SocketException e ) 
-            {
-               mLogger.WriteLine( String.Format( "SocketException: {0}", e ) );
-            }
-        }
-
-        private void OnEraseOutput( object sender, EventArgs e )
-        {
-            mOutput.Clear();
+            var dialog = new PlugInsForm( ModulePugIns.PlugInsManager );
+            dialog.ShowDialog();
         }
     }
 }
