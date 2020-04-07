@@ -95,7 +95,7 @@ namespace ArchBench.Server
         private void OnExit(object sender, EventArgs e)
         {
             Server?.Stop();
-            ModulePugIns.PlugInsManager.Clear();
+            ModulePugIns.Manager.Clear();
             Application.Exit();
         }
 
@@ -122,7 +122,7 @@ namespace ArchBench.Server
 
         private void OnPlugIn( object sender, EventArgs e )
         {
-            var dialog = new PlugInsForm( ModulePugIns.PlugInsManager );
+            var dialog = new PlugInsForm( ModulePugIns.Manager );
             dialog.ShowDialog();
         }
     }
