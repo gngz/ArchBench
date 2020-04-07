@@ -82,9 +82,6 @@
     <Compile Include="ArchServerForm.Designer.cs">
       <DependentUpon>ArchServerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClickableToolStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="IPlugInsManager.cs" />
     <Compile Include="ModulePlugIns.cs" />
     <Compile Include="PlugInsForm.cs">
