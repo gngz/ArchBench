@@ -29,7 +29,7 @@ namespace ArchBench.Server
         {
             var item = new ListViewItem {
                 Text       = aPlugIn.Name,
-                Checked    = true,
+                Checked    = aPlugIn.Enabled,
                 ImageIndex = 0,
                 Tag        = aPlugIn
             };

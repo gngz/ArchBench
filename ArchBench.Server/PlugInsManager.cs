@@ -55,7 +55,6 @@ namespace ArchBench.Server
                 //Add the new plugin to our collection here
                 mPlugIns.Add( instance );
 
-                instance.Enabled = true;
                 instances.Add( instance );
             }
 
