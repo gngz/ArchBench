@@ -13,8 +13,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlugIns", "PlugIns", "{5DF8506A-53A8-4D38-9794-83EA082925E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.Server", "ArchBench.Server\ArchBench.Server.csproj", "{6E27897A-D0AB-4F1F-92EF-F1079CF0416E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56821931-D69A-4220-9D11-E1BADE7B4441} = {56821931-D69A-4220-9D11-E1BADE7B4441}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.PlugIns.Hello", "ArchBench.PlugIns.Hello\ArchBench.PlugIns.Hello.csproj", "{56821931-D69A-4220-9D11-E1BADE7B4441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchBench.PlugIns.Hello", "ArchBench.PlugIns.Hello\ArchBench.PlugIns.Hello.csproj", "{56821931-D69A-4220-9D11-E1BADE7B4441}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
