@@ -3,7 +3,7 @@ using System.Linq;
 using ArchBench.PlugIns;
 using ArchBench.Server.Kernel;
 
-namespace ArchBench.ServerCLI
+namespace ArchBench.Server.CLI
 {
     class Program
     {
@@ -24,10 +24,9 @@ namespace ArchBench.ServerCLI
             {
                 Console.Write( "? ");
                 var command = Console.ReadLine()?.Trim();
-                var parts = command?.Split( ' ' );
-                if ( parts == null ) continue;
-                if ( parts.Length == 0 ) continue;
+                if (string.IsNullOrEmpty(command)) continue;
 
+                var parts = command?.Split(' ');
                 switch ( parts[0].ToLower() )
                 {
                     case "help": Help();
