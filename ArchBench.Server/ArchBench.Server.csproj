@@ -82,15 +82,12 @@
     <Compile Include="ArchServerForm.Designer.cs">
       <DependentUpon>ArchServerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="IPlugInsManager.cs" />
-    <Compile Include="ModulePlugIns.cs" />
     <Compile Include="PlugInsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PlugInsForm.Designer.cs">
       <DependentUpon>PlugInsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlugInsManager.cs" />
     <Compile Include="PlugInsSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +152,10 @@
     <ProjectReference Include="..\ArchBench.PlugIns\ArchBench.PlugIns.csproj">
       <Project>{3674e873-4dfe-4296-8d75-9869ac6a9ec1}</Project>
       <Name>ArchBench.PlugIns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ArchBench.Server.Kernel\ArchBench.Server.Kernel.csproj">
+      <Project>{d90378cc-1780-4b17-81fe-409b465280f7}</Project>
+      <Name>ArchBench.Server.Kernel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

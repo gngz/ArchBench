@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Net;
 using ArchBench.PlugIns;
+using ArchBench.Server.Kernel;
 
 namespace ArchBench.Server
 {
@@ -14,12 +15,11 @@ namespace ArchBench.Server
         {
             InitializeComponent();
             Logger = new TextBoxLogger( mOutput );
-            ModulePugIns = new ModulePlugIns( Logger );
+            Server = new PlugInsServer( Logger );
         }
 
-        public HttpServer.HttpServer Server { get; private set; }
-        private ModulePlugIns        ModulePugIns { get; }
-        private IArchBenchLogger     Logger { get; }
+        private IArchBenchLogger Logger { get; }
+        public  PlugInsServer    Server { get; }
 
         #region Toolbar Double Click problem
 
@@ -95,7 +95,6 @@ namespace ArchBench.Server
         private void OnExit(object sender, EventArgs e)
         {
             Server?.Stop();
-            ModulePugIns.Manager.Clear();
             Application.Exit();
         }
 
@@ -104,26 +103,27 @@ namespace ArchBench.Server
             mConnectTool.Checked = ! mConnectTool.Checked;
             if ( mConnectTool.Checked )
             {
-                Server = new HttpServer.HttpServer();
-                Server.Add( ModulePugIns );
-                Server.Start( IPAddress.Any, int.Parse( mPort.Text ) );
-                Logger.WriteLine( "Server online on port {0}", mPort.Text );
-
-                mConnectTool.Image = Properties.Resources.connect;
+                if ( int.TryParse( mPort.Text, out int port ) )
+                {
+                    Server.Start( port );
+                    Logger.WriteLine("Server online on port {0}", port );
+                    mConnectTool.Image = Properties.Resources.connect;
+                }
+                else
+                {
+                    Logger.WriteLine("Invalid port '{0}' specification", mPort.Text );
+                }
             }
             else
             {
                 Server.Stop();
-                Server = null;
-
                 mConnectTool.Image = Properties.Resources.disconnect;
             }
         }
 
         private void OnPlugIn( object sender, EventArgs e )
         {
-            var dialog = new PlugInsForm( ModulePugIns.Manager );
-            dialog.ShowDialog();
+            new PlugInsForm( Server.Manager ).ShowDialog();
         }
     }
 }
