@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Antlr4.Runtime;
 using ArchBench.PlugIns;
 using ArchBench.Server.Kernel;
 
@@ -25,6 +26,17 @@ namespace ArchBench.Server.CLI
                 Console.Write( "? ");
                 var command = Console.ReadLine()?.Trim();
                 if (string.IsNullOrEmpty(command)) continue;
+
+                var lexer  = new ArchBenchLexer(new CodePointCharStream( command ));
+                var tokens = new CommonTokenStream( lexer );
+                var parser = new ArchBenchParser( tokens );
+
+                parser.RemoveErrorListeners();
+                parser.AddErrorListener( new ArchBenchErrorListener() );
+
+                var visitor = new ArchBenchExecutor( Server );
+                if ( !visitor.VisitCommand( parser.command() ) ) break;
+                continue;
 
                 var parts = command?.Split(' ');
                 switch ( parts[0].ToLower() )
