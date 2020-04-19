@@ -33,10 +33,14 @@ namespace ArchBench.PlugIns.Hello
         {
             if ( aRequest.Uri.AbsolutePath.StartsWith( "/hello", StringComparison.InvariantCultureIgnoreCase ) )
             {
+                aSession[ "Hello" ] = "TESTE";
+
                 var writer = new StreamWriter(aResponse.Body);
                 writer.WriteLine("Hi!");
                 writer.Flush();
 
+                Host.Logger.WriteLine( $"Saying Hello to { aRequest.Headers["remote_addr"] }");
+                
                 return true;
             }
             return false;

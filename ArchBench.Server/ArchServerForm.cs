@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using System.Net;
 using ArchBench.PlugIns;
 using ArchBench.Server.Kernel;
+using ArchBench.Server.Configurations;
+
 
 namespace ArchBench.Server
 {
@@ -98,6 +105,11 @@ namespace ArchBench.Server
             Application.Exit();
         }
 
+        private void OnClearConsole(object sender, EventArgs e)
+        {
+            mOutput.Text = string.Empty;
+        }
+
         private void OnConnect(object sender, EventArgs e)
         {
             mConnectTool.Checked = ! mConnectTool.Checked;
@@ -124,6 +136,95 @@ namespace ArchBench.Server
         private void OnPlugIn( object sender, EventArgs e )
         {
             new PlugInsForm( Server.Manager ).ShowDialog();
+        }
+
+        private string GetIP()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork) return ip.ToString();
+            }
+            return "0.0.0.0";
+        }
+
+        private int GetPort()
+        {
+            return int.TryParse( mPort.Text, out var port ) ? port : 8081;
+        }
+
+        private async void OnOpen(object sender, EventArgs e)
+        {
+            var dialog = new OpenFileDialog {
+                Filter = @"Configuration Files (*.config)|*.config|All Files (*.*)|*.*"
+            };
+
+            if ( dialog.ShowDialog() != DialogResult.OK ) return;
+
+            //var options = new JsonSerializerOptions();
+            //options.MaxDepth = 4;
+
+            using ( var stream = File.OpenRead( dialog.FileName ) )
+            {
+                var config = await JsonSerializer.DeserializeAsync<ServerConfig>( stream );
+                if (config == null) return;
+
+                mPort.Text = config.Port.ToString();
+                ModulePugIns.Manager.Clear();
+                foreach (var plugin in config.PlugIns)
+                {
+                    var instance = ModulePugIns.Manager.Add(plugin.FileName, plugin.FullName);
+                    if (instance == null) continue;
+
+                    foreach (var key in plugin.Settings.Keys)
+                    {
+                        instance.Settings[key] = plugin.Settings[key];
+                    }
+                }
+            }
+
+            //var stream = new StreamReader( dialog.FileName );
+            //var config = JsonSerializer.Deserialize<ServerConfig>( stream.ReadToEnd(), options );
+        }
+
+        private async void OnSave(object sender, EventArgs e)
+        {
+            var dialog = new SaveFileDialog() {
+                Filter = @"Configuration Files (*.config)|*.config"
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK) return;
+
+            var config = new ServerConfig { Port = GetPort() };
+            foreach ( var plugin in ModulePugIns.Manager.PlugIns )
+            {
+                var filename = ModulePugIns.Manager.GetFileName( plugin );
+                if ( config.PlugIns.Any( c => c.FileName.Equals( filename ) ) ) continue;
+
+                var elem = new PlugInConfig {
+                    FullName = plugin.GetType().FullName,
+                    FileName = filename
+                };
+
+                foreach ( var setting in plugin.Settings )
+                {
+                    elem.Settings.Add(setting, plugin.Settings[setting]);
+                }
+                config.PlugIns.Add( elem  );
+            }
+
+            using ( var stream = File.Create( dialog.FileName ) )
+            {
+                await JsonSerializer.SerializeAsync( stream, config );
+            }
+
+            //using (var stream = new FileStream(dialog.FileName, FileMode.Create))
+            //{
+            //    var writer = new Utf8JsonWriter(stream);
+            //    var options = new JsonSerializerOptions { WriteIndented = true };
+            //    JsonSerializer.Serialize(writer, config, options);
+            //    stream.Flush();
+            //}
         }
     }
 }

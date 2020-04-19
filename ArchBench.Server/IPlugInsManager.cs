@@ -18,6 +18,14 @@ namespace ArchBench.Server
         IEnumerable<IArchBenchPlugIn> Add( string aFileName );
 
         /// <summary>
+        /// <summary>Loads all plug-ins contained in the specified file.</summary>
+        /// </summary>
+        /// <param name="aFileName">The assembly's path.</param>
+        /// <param name="aFullName">Type's full name.</param>
+        /// <returns>An enumeration of all new added plug-ins</returns>
+        IArchBenchPlugIn Add( string aFileName, string aFullName );
+
+        /// <summary>
         /// Removes the specified plug-in from the manager's collection. 
         /// </summary>
         /// <param name="aPlugIn">a reference to the plug-in</param>
@@ -34,5 +42,7 @@ namespace ArchBench.Server
         /// Unloads and Closes all plug-ins
         /// </summary>
         void Clear();
+
+        string GetFileName( IArchBenchPlugIn aPlugIn );
     }
 }

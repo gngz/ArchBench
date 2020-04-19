@@ -1,4 +1,6 @@
-﻿using ArchBench.PlugIns;
+﻿using System;
+using System.Runtime.CompilerServices;
+using ArchBench.PlugIns;
 using HttpServer;
 using HttpServer.HttpModules;
 using HttpServer.Sessions;
@@ -7,12 +9,17 @@ namespace ArchBench.Server
 {
     public class ModulePlugIns : HttpModule, IArchBenchPlugInHost
     {
-        public ModulePlugIns( IArchBenchLogger aLogger )
+        public ModulePlugIns( IArchBenchLogger aLogger, Func<Uri> aGetUri )
         {
             Logger  = aLogger;
+            UriHandler = aGetUri;
+
             Manager = new PlugInsManager( this );
         }
 
+        private Func<Uri> UriHandler { get; }
+
+        public Uri Uri => UriHandler();
         public IArchBenchLogger Logger { get; set; }
 
         public IPlugInsManager Manager { get; }

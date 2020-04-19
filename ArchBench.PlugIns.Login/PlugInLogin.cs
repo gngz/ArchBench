@@ -20,10 +20,32 @@ namespace ArchBench.PlugIns.Login
             mManager.LoadResources( "/login", Assembly.GetExecutingAssembly(), Assembly.GetExecutingAssembly().GetName().Name );
         }
 
+        public string Name => "Login Plugin";
+        public string Description => "Force user to log in before using the site";
+        public string Author => "Leonel Nóbrega";
+        public string Version => "1.0";
+
+        public bool Enabled { get; set; }
+
+        public IArchBenchPlugInHost Host { get; set; }
+        public IArchBenchSettings Settings { get; } = new ArchBenchSettings();
+
+        public void Initialize()
+        {
+            Settings["Redirect"] = "";
+        }
+
+        public void Dispose()
+        {
+        }
+
         #region IArchServerModulePlugIn Members
 
         public bool Process( IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession )
         {
+            // Check if the user is logged in.
+            if (aSession["Username"] != null) return false;
+
             if ( aRequest.Uri.AbsolutePath.StartsWith( "/login" ) )
             {
                 switch (aRequest.Method)
@@ -37,11 +59,17 @@ namespace ArchBench.PlugIns.Login
                 }
             }
 
-            // Check if the user is logged in.
-            if ( aSession[ "Username" ] != null ) return false;
+            if ( string.IsNullOrEmpty( Settings[ "Redirect" ] ) )
+            {
+//                Settings["Redirect"] = $"{ Host.Uri.AbsoluteUri }{ aRequest.Uri.AbsolutePath }";
+                Settings["Redirect"] = aRequest.Uri.AbsolutePath;
+                Host.Logger.WriteLine($"Redirect: { Settings["Redirect"] }");
+            }
+
 
             aSession[ "Redirect" ] = aRequest.Uri.AbsolutePath;
             aResponse.Redirect("/login");
+            aResponse.Send();
             return true;
         }
 
@@ -75,6 +103,7 @@ namespace ArchBench.PlugIns.Login
 
                 if ( Settings.Contains("Redirect") && ! string.IsNullOrEmpty(Settings[ "Redirect" ] ) )
                 {
+                    Host.Logger.WriteLine( $"Redirecting to => { Settings["Redirect"] }" );
                     aResponse.Redirect(Settings["Redirect"]);
                 }
                 else if ( ! string.IsNullOrEmpty( aSession[ "Redirect" ]?.ToString() ) )
@@ -204,29 +233,5 @@ namespace ArchBench.PlugIns.Login
 
             return mManager.GetResourceStream( aPath );
         }
-
-
-        #region IArchServerPlugIn Members
-
-        public string Name        => "Login Plugin";
-        public string Description => "Force user to log in before using the site";
-        public string Author      => "Leonel Nóbrega";
-        public string Version     => "1.0";
-
-        public bool Enabled { get; set; }
-
-        public IArchBenchPlugInHost Host     { get; set; }
-        public IArchBenchSettings   Settings { get; } = new ArchBenchSettings();
-
-        public void Initialize()
-        {
-            Settings["Redirect"] = "";
-        }
-
-        public void Dispose()
-        {
-        }
-
-        #endregion
     }
 }
