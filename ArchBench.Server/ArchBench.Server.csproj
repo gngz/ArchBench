@@ -196,6 +196,51 @@
   <ItemGroup>
     <None Include="Resources\disconnect.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\connect1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\disconnect1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pencil_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_go.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plugin_link.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\disk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder %281%29.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

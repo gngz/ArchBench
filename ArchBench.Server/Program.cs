@@ -9,12 +9,12 @@ namespace ArchBench.Server
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main( string[] args )
         {
             Properties.Settings.Default.Reload();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ArchServerForm());
+            Application.Run(new ArchServerForm( args ));
             Properties.Settings.Default.Save();
         }
     }

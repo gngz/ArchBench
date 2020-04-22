@@ -27,7 +27,7 @@ namespace ArchBench.PlugIns.Logger
 
         public bool Process(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
         {
-            Host.Logger.WriteLine("{0} {1} : {2}", aRequest.Method, aRequest.HttpVersion, aRequest.UriPath );
+            Host.Logger.WriteLine("{0,8} {1} : {2}", aRequest.Method, aRequest.HttpVersion, aRequest.Uri.AbsoluteUri );
 
             if ( ! bool.TryParse( Settings[ "Headers" ], out var headers ) ) return false;
             if ( ! headers ) return false;

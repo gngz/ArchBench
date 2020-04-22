@@ -1,12 +1,9 @@
 ﻿using HttpServer;
 using HttpServer.Sessions;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Text;
 
 namespace ArchBench.PlugIns.Broker
@@ -65,7 +62,7 @@ namespace ArchBench.PlugIns.Broker
                 var cookie = GetCookie( aRequest );
                 var server = ( cookie != null ? Assignments[ cookie ] : null ) ?? Registry.Get();
 
-                Host.Logger.WriteLine($"Forward to { server }");
+                Host.Logger.WriteLine($"Forward to { server } -> { aRequest.Method } { aRequest.Uri.AbsolutePath }");
                 DownloadPageContents( aRequest, aResponse, server );
                 aResponse.Send();
 
@@ -80,29 +77,37 @@ namespace ArchBench.PlugIns.Broker
             if ( string.IsNullOrEmpty( aHost ) ) return;
 
             var uri = new Uri( aHost + aRequest.Uri.AbsolutePath );
-            var client = new WebClient { QueryString = GetFormValues( aRequest ) };
+            var client = new WebClient();
 
-            ForwardCookie( aRequest, client );
-
-            byte[] bytes = null;
-            if ( aRequest.Method == Method.Post )
+            try
             {
-                bytes = client.UploadValues( uri, GetFormValues(aRequest));
+                ForwardCookie(aRequest, client);
+
+                byte[] bytes = null;
+                if (aRequest.Method == Method.Post)
+                {
+                    bytes = client.UploadValues(uri, GetFormValues(aRequest));
+                }
+                else
+                {
+                    bytes = client.DownloadData(uri);
+
+                }
+                BackwardCookie(aResponse, client);
+
+                if (client.ResponseHeaders.AllKeys.Contains("Set-Cookie"))
+                {
+                    var parts = client.ResponseHeaders["Set-Cookie"].Split(';');
+                    Assignments[parts[0]] = aHost;
+                }
+
+                aResponse.Body.Write(bytes, 0, bytes.Length);
             }
-            else
+            catch ( WebException exception )
             {
-                bytes = client.DownloadData( uri );
+                var response = exception.Response as HttpWebResponse;
+                aResponse.Status = response?.StatusCode ?? HttpStatusCode.NotFound;
             }
-
-            BackwardCookie( aResponse, client );
-
-            if ( client.ResponseHeaders.AllKeys.Contains( "Set-Cookie" ) )
-            {
-                var parts = client.ResponseHeaders[ "Set-Cookie" ].Split( ';' );
-                Assignments[ parts[0] ] = aHost;
-            }
-
-            aResponse.Body.Write( bytes, 0, bytes.Length );
         }
 
         private NameValueCollection GetFormValues(IHttpRequest aRequest)
@@ -132,7 +137,6 @@ namespace ArchBench.PlugIns.Broker
         private string GetCookie( IHttpRequest aRequest )
         {
             var cookie = aRequest.Headers[ "Cookie" ];
-//            Host.Logger.WriteLine( $"Request Cookie : { cookie ?? "none" }" );
             return aRequest.Headers["Cookie"];
         }
 
@@ -150,15 +154,6 @@ namespace ArchBench.PlugIns.Broker
 
         private void BackwardCookie( IHttpResponse aResponse, WebClient aClient )
         {
-            //if (aClient.ResponseHeaders["Set-Cookie"] == null) return;
-            //aResponse.AddHeader("Set-Cookie", aClient.ResponseHeaders["Set-Cookie"]);
-
-            //foreach ( string header in aClient.Headers )
-            //{
-            //    if ( header != "Cookie" ) continue;
-
-            //}
-
             foreach ( string header in aClient.ResponseHeaders )
             {
                 aResponse.AddHeader( header, aClient.ResponseHeaders[header] );

@@ -46,31 +46,20 @@ namespace ArchBench.PlugIns.Login
             // Check if the user is logged in.
             if (aSession["Username"] != null) return false;
 
-            if ( aRequest.Uri.AbsolutePath.StartsWith( "/login" ) )
+            if ( string.IsNullOrEmpty( Settings["Redirect"] ) )
             {
-                switch (aRequest.Method)
-                {
-                    case Method.Get:
-                        return Get(aRequest, aResponse, aSession);
-                    case Method.Post:
-                        return Post(aRequest, aResponse, aSession);
-                    default:
-                        return false;
-                }
+                aSession["Redirect"] = aRequest.Uri.AbsolutePath;
             }
 
-            if ( string.IsNullOrEmpty( Settings[ "Redirect" ] ) )
+            switch (aRequest.Method)
             {
-//                Settings["Redirect"] = $"{ Host.Uri.AbsoluteUri }{ aRequest.Uri.AbsolutePath }";
-                Settings["Redirect"] = aRequest.Uri.AbsolutePath;
-                Host.Logger.WriteLine($"Redirect: { Settings["Redirect"] }");
+                case Method.Get:
+                    return Get(aRequest, aResponse, aSession);
+                case Method.Post:
+                    return Post(aRequest, aResponse, aSession);
+                default:
+                    return false;
             }
-
-
-            aSession[ "Redirect" ] = aRequest.Uri.AbsolutePath;
-            aResponse.Redirect("/login");
-            aResponse.Send();
-            return true;
         }
 
         private bool Get( IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession )
@@ -80,10 +69,16 @@ namespace ArchBench.PlugIns.Login
                 return ProcessResource(aRequest, aResponse);
             }
 
-            if ( ! aRequest.Uri.AbsolutePath.StartsWith( "/login" ) ) return false;
+            var redirect = Settings[ "Redirect" ];
+            if ( string.IsNullOrEmpty( redirect ) )
+            {
+                redirect = aSession[ "Redirect" ] as string;
+            }
+
+            var html = Resource.login.Replace("$$REDIRECT$$", redirect ?? string.Empty );
 
             var writer = new StreamWriter(aResponse.Body);
-            writer.Write(Resource.login);
+            writer.Write(html);
             writer.Flush();
 
             return true;
@@ -91,30 +86,30 @@ namespace ArchBench.PlugIns.Login
 
         private bool Post( IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession )
         {
-            foreach (HttpInputItem item in aRequest.Form)
-            {
-                Host.Logger.WriteLine("[{0}] := {1}", item.Name, item.Value);
-            }
+            //foreach (HttpInputItem item in aRequest.Form)
+            //{
+            //    Host.Logger.WriteLine("[{0}] := {1}", item.Name, item.Value);
+            //}
 
             if (aRequest.Form.Contains("Username"))
             {
                 aSession["Username"] = aRequest.Form["Username"].Value;
-                Host.Logger.WriteLine("User [{0}] logged on.", aSession["Username"]);
 
-                if ( Settings.Contains("Redirect") && ! string.IsNullOrEmpty(Settings[ "Redirect" ] ) )
+                var redirect = Settings[ "Redirect" ];
+                if ( string.IsNullOrEmpty( redirect ) )
                 {
-                    Host.Logger.WriteLine( $"Redirecting to => { Settings["Redirect"] }" );
-                    aResponse.Redirect(Settings["Redirect"]);
+                    redirect = aSession[ "Redirect" ] as string;
                 }
-                else if ( ! string.IsNullOrEmpty( aSession[ "Redirect" ]?.ToString() ) )
-                {
-                    aResponse.Redirect( aSession["Redirect"].ToString() );
-                }
-                else
+
+                if ( string.IsNullOrEmpty( redirect ) )
                 {
                     var writer = new StreamWriter(aResponse.Body);
                     writer.WriteLine("<p>User <strong>{0}</strong> logged on.</p>", aSession["Username"]);
                     writer.Flush();
+                }
+                else 
+                {
+                    aResponse.Redirect( redirect );
                 }
 
                 return true;

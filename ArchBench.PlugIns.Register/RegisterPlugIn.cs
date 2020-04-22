@@ -11,6 +11,8 @@ namespace ArchBench.PlugIns.Register
         public string Author => "Leonel Nóbrega";
         public string Version => "1.0";
 
+        public static HttpClient HttpClient { get; } = new HttpClient();
+
         public bool Enabled
         {
             get => OnService; 
@@ -44,9 +46,8 @@ namespace ArchBench.PlugIns.Register
             if ( ! url.EndsWith( "/" ) ) url += "/";
             url += aEnabled ? "register" : "unregister";
             url += $"?port={ Host.Uri.Port }";
-            
-            var http = new HttpClient();
-            var response = await http.GetAsync( new Uri( url ) );
+          
+            var response = await HttpClient.GetAsync( new Uri( url ) );
             if ( response.IsSuccessStatusCode ) OnService = aEnabled;
         } 
     }

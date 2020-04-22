@@ -8,6 +8,12 @@
     <None Remove="favicon.ico" />
     <None Remove="favicon.png" />
     <None Remove="marker.png" />
+    <None Remove="tag_green.png" />
+    <None Remove="tag_orange.png" />
+    <None Remove="tag_pink.png" />
+    <None Remove="tag_purple.png" />
+    <None Remove="tag_red.png" />
+    <None Remove="tag_yellow.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +34,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="marker.png" />
+    <EmbeddedResource Include="tag_green.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tag_orange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tag_pink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tag_purple.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tag_red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tag_yellow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

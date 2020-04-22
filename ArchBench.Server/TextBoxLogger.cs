@@ -38,7 +38,7 @@ namespace ArchBench.Server
             if ( IsNewLine )
             {
                 for ( var i = 0 ; i < IndentLevel ; i++ )
-                    TextBox.AppendText( "    " );
+                    aMessage = "    " + aMessage;
                 IsNewLine = false;
             }
             AppendText( aMessage );
@@ -63,8 +63,8 @@ namespace ArchBench.Server
 
         public void WriteLine( string aMessage )
         {
-            Write( aMessage );
-            WriteLine();
+            IsNewLine = true;
+            Write( aMessage + Environment.NewLine );
         }
 
         // This delegate enables asynchronous calls for setting the text property on a TextBox control.
@@ -81,7 +81,10 @@ namespace ArchBench.Server
             }
             else
             {
-                TextBox.AppendText( aText );
+                lock ( TextBox )
+                {
+                    TextBox.AppendText(aText);
+                }
             }
         }
     }

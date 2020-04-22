@@ -33,17 +33,43 @@ namespace ArchBench.PlugIns.Hello
         {
             if ( aRequest.Uri.AbsolutePath.StartsWith( "/hello", StringComparison.InvariantCultureIgnoreCase ) )
             {
-                aSession[ "Hello" ] = "TESTE";
+                aSession[ "Count" ] = (int?) aSession[ "Count" ] + 1 ?? 1;
+                var ordinal = AddOrdinal( (int) aSession[ "Count" ] );
 
                 var writer = new StreamWriter(aResponse.Body);
-                writer.WriteLine("Hi!");
+                writer.WriteLine( $"Hi! for the { ordinal } time.");
                 writer.Flush();
 
-                Host.Logger.WriteLine( $"Saying Hello to { aRequest.Headers["remote_addr"] }");
+                Host.Logger.WriteLine( $"Saying Hello for the { ordinal } times.");
                 
                 return true;
             }
             return false;
+        }
+
+        public static string AddOrdinal( int num )
+        {
+            if (num <= 0) return num.ToString();
+
+            switch (num % 100)
+            {
+                case 11:
+                case 12:
+                case 13:
+                    return num + "th";
+            }
+
+            switch (num % 10)
+            {
+                case 1:
+                    return num + "st";
+                case 2:
+                    return num + "nd";
+                case 3:
+                    return num + "rd";
+                default:
+                    return num + "th";
+            }
         }
     }
 }

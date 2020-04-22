@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -18,7 +19,7 @@ namespace ArchBench.Server
     public partial class ArchServerForm : Form
     {
 
-        public ArchServerForm()
+        public ArchServerForm( string[] aArgs )
         {
             InitializeComponent();
             Logger = new TextBoxLogger( mOutput );
@@ -130,6 +131,9 @@ namespace ArchBench.Server
             {
                 Server.Stop();
                 mConnectTool.Image = Properties.Resources.disconnect;
+
+                mPort.Enabled = true;
+                mPort.BackColor = Color.Empty;
             }
         }
 
@@ -153,20 +157,22 @@ namespace ArchBench.Server
             return int.TryParse( mPort.Text, out var port ) ? port : 8081;
         }
 
-        private async void OnOpen(object sender, EventArgs e)
+        private void OnOpen(object sender, EventArgs e)
         {
             var dialog = new OpenFileDialog {
                 Filter = @"Configuration Files (*.config)|*.config|All Files (*.*)|*.*"
             };
-
             if ( dialog.ShowDialog() != DialogResult.OK ) return;
+            
+            Open( dialog.FileName );
+        }
 
-            //var options = new JsonSerializerOptions();
-            //options.MaxDepth = 4;
-
-            using ( var stream = File.OpenRead( dialog.FileName ) )
+        private async void Open( string aFileName )
+        {
+            mPlugInsListView.BeginUpdate();
+            using (var stream = File.OpenRead( aFileName))
             {
-                var config = await JsonSerializer.DeserializeAsync<ServerConfig>( stream );
+                var config = await JsonSerializer.DeserializeAsync<ServerConfig>(stream);
                 if (config == null) return;
 
                 mPort.Text = config.Port.ToString();
@@ -180,11 +186,14 @@ namespace ArchBench.Server
                     {
                         instance.Settings[key] = plugin.Settings[key];
                     }
+
+                    Append(instance);
                 }
             }
-
-            //var stream = new StreamReader( dialog.FileName );
-            //var config = JsonSerializer.Deserialize<ServerConfig>( stream.ReadToEnd(), options );
+            mPlugInsListView.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
+            mPlugInsListView.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.HeaderSize);
+            mPlugInsListView.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+            mPlugInsListView.EndUpdate();
         }
 
         private async void OnSave(object sender, EventArgs e)
@@ -225,6 +234,88 @@ namespace ArchBench.Server
             //    JsonSerializer.Serialize(writer, config, options);
             //    stream.Flush();
             //}
+        }
+
+        private void Append( IArchBenchPlugIn aPlugIn )
+        {
+            var item = new ListViewItem
+            {
+                Text = aPlugIn.Name,
+                Checked = aPlugIn.Enabled,
+                ImageIndex = 0,
+                Tag = aPlugIn
+            };
+
+            item.SubItems.Add(aPlugIn.Version);
+            item.SubItems.Add(aPlugIn.Author);
+            item.SubItems.Add(aPlugIn.Description);
+
+            mPlugInsListView.Items.Add(item);
+        }
+
+        private void OnPlugInAppend(object sender, EventArgs e)
+        {
+            var dialog = new OpenFileDialog() { Multiselect = true };
+            dialog.Filter = @"Arch.Bench PlugIn File (*.dll)|*.dll";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var name in dialog.FileNames)
+                {
+                    var plugins = ModulePugIns.Manager.Add( name );
+                    foreach (var plugin in plugins)
+                    {
+                        Append(plugin);
+                    }
+                }
+            }
+        }
+
+        private void OnPlugInRemove(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in mPlugInsListView.SelectedItems)
+            {
+                var plugin = (IArchBenchPlugIn)item.Tag;
+                if (plugin == null) continue;
+
+                ModulePugIns.Manager.Remove(plugin);
+                item.Remove();
+            }
+
+        }
+
+        private void OnPlugInSettings(object sender, EventArgs e)
+        {
+            if (mPlugInsListView.SelectedItems.Count == 0) return;
+
+            var dialog = new PlugInsSettingsForm(mPlugInsListView.SelectedItems[0].Tag as IArchBenchPlugIn);
+            dialog.ShowDialog();
+        }
+
+        private void OnPlugInItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            e.Item.ImageIndex = e.Item.Checked ? 0 : 1;
+            e.Item.ForeColor = e.Item.Checked ? Color.Empty : Color.Gray;
+
+            var plugin = (IArchBenchPlugIn) e.Item.Tag;
+            if (plugin != null) plugin.Enabled = e.Item.Checked;
+        }
+
+        private void OnColumnClick( object sender, ColumnClickEventArgs aArgs )
+        {
+            if ( aArgs.Column != 0 ) return;
+
+            var check = mNameColumnHeader.ImageIndex == 3;
+            foreach ( ListViewItem item in mPlugInsListView.Items )
+            {
+                var plugin = (IArchBenchPlugIn)item.Tag;
+                if (plugin == null) continue;
+
+                plugin.Enabled = check;
+                item.Checked = check;
+            }
+
+            mNameColumnHeader.ImageIndex = mNameColumnHeader.ImageIndex == 3 ? 2 : 3;
         }
     }
 }
