@@ -14,7 +14,8 @@ namespace ArchBench.Server
         }
 
         public IArchBenchLogger Logger { get; set; }
-        public IPlugInsManager  Manager { get; }
+
+        public IPlugInsManager Manager { get; }
 
         public override bool Process( IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession )
         {
