@@ -1,9 +1,9 @@
-﻿using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using ArchBench.PlugIns;
 using ArchBench.Server.Kernel;
 
@@ -111,7 +111,7 @@ namespace ArchBench.Server.CLI
             }
         }
 
-        private void Show(IArchBenchPlugIn aPlugIn)
+        private void Show( IArchBenchPlugIn aPlugIn )
         {
             if (aPlugIn == null) return;
 
@@ -135,7 +135,5 @@ namespace ArchBench.Server.CLI
         {
             return aPlugIn.Enabled ? "enabled" : "disabled";
         }
-
-
     }
 }

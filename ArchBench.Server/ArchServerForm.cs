@@ -24,6 +24,15 @@ namespace ArchBench.Server
             InitializeComponent();
             Logger = new TextBoxLogger( mOutput );
             Server = new PlugInsServer( Logger );
+
+            mPort.Text = PlugInsServer.DefaultPort.ToString();
+
+            mPlugInsListView.SelectedIndexChanged +=
+                (sender, args) => mSettingsToolStripButton.Enabled = mPlugInsListView.SelectedItems.Count > 0;
+            mPlugInsListView.SelectedIndexChanged +=
+                (sender, args) => mRemoveToolStripButton.Enabled = mPlugInsListView.SelectedItems.Count > 0;
+
+            mNameColumnHeader.ImageIndex = 3;
         }
 
         private IArchBenchLogger Logger { get; }
@@ -121,6 +130,9 @@ namespace ArchBench.Server
                     Server.Start( port );
                     Logger.WriteLine("Server online on port {0}", port );
                     mConnectTool.Image = Properties.Resources.connect;
+
+                    mPort.Enabled = false;
+                    mPort.BackColor = Color.PaleGreen;
                 }
                 else
                 {
@@ -142,19 +154,23 @@ namespace ArchBench.Server
             new PlugInsForm( Server.Manager ).ShowDialog();
         }
 
-        private string GetIP()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork) return ip.ToString();
-            }
-            return "0.0.0.0";
-        }
-
         private int GetPort()
         {
-            return int.TryParse( mPort.Text, out var port ) ? port : 8081;
+            return int.TryParse( mPort.Text, out var port ) ? port : PlugInsServer.DefaultPort;
+        }
+
+        private void OnNew(object sender, EventArgs e)
+        {
+            Server.Stop();
+
+            mPlugInsListView.Items.Clear();
+            Server.Manager.Clear();
+
+            mPort.Text = PlugInsServer.DefaultPort.ToString();
+            mPort.Enabled = true;
+            mPort.BackColor = Color.Empty;
+
+            mNameColumnHeader.ImageIndex = 3;
         }
 
         private void OnOpen(object sender, EventArgs e)
@@ -176,10 +192,10 @@ namespace ArchBench.Server
                 if (config == null) return;
 
                 mPort.Text = config.Port.ToString();
-                ModulePugIns.Manager.Clear();
+                Server.Manager.Clear();
                 foreach (var plugin in config.PlugIns)
                 {
-                    var instance = ModulePugIns.Manager.Add(plugin.FileName, plugin.FullName);
+                    var instance = Server.Manager.Add( plugin.FileName, plugin.FullName );
                     if (instance == null) continue;
 
                     foreach (var key in plugin.Settings.Keys)
@@ -193,6 +209,7 @@ namespace ArchBench.Server
             mPlugInsListView.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
             mPlugInsListView.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.HeaderSize);
             mPlugInsListView.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+            mPlugInsListView.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
             mPlugInsListView.EndUpdate();
         }
 
@@ -205,9 +222,9 @@ namespace ArchBench.Server
             if (dialog.ShowDialog() != DialogResult.OK) return;
 
             var config = new ServerConfig { Port = GetPort() };
-            foreach ( var plugin in ModulePugIns.Manager.PlugIns )
+            foreach ( var plugin in Server.Manager.PlugIns )
             {
-                var filename = ModulePugIns.Manager.GetFileName( plugin );
+                var filename = Server.Manager.GetFileName( plugin );
                 if ( config.PlugIns.Any( c => c.FileName.Equals( filename ) ) ) continue;
 
                 var elem = new PlugInConfig {
@@ -226,14 +243,6 @@ namespace ArchBench.Server
             {
                 await JsonSerializer.SerializeAsync( stream, config );
             }
-
-            //using (var stream = new FileStream(dialog.FileName, FileMode.Create))
-            //{
-            //    var writer = new Utf8JsonWriter(stream);
-            //    var options = new JsonSerializerOptions { WriteIndented = true };
-            //    JsonSerializer.Serialize(writer, config, options);
-            //    stream.Flush();
-            //}
         }
 
         private void Append( IArchBenchPlugIn aPlugIn )
@@ -262,7 +271,7 @@ namespace ArchBench.Server
             {
                 foreach (var name in dialog.FileNames)
                 {
-                    var plugins = ModulePugIns.Manager.Add( name );
+                    var plugins = Server.Manager.Add( name );
                     foreach (var plugin in plugins)
                     {
                         Append(plugin);
@@ -278,7 +287,7 @@ namespace ArchBench.Server
                 var plugin = (IArchBenchPlugIn)item.Tag;
                 if (plugin == null) continue;
 
-                ModulePugIns.Manager.Remove(plugin);
+                Server.Manager.Remove(plugin);
                 item.Remove();
             }
 
@@ -317,5 +326,14 @@ namespace ArchBench.Server
 
             mNameColumnHeader.ImageIndex = mNameColumnHeader.ImageIndex == 3 ? 2 : 3;
         }
+
+        private void OnPortChanged( object sender, EventArgs e )
+        {
+            if ( int.TryParse( mPort.Text, out var port ) )
+            {
+                Server.Port = port;
+            }
+        }
+
     }
 }

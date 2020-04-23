@@ -18,6 +18,14 @@ namespace ArchBench.Server.Kernel
         IEnumerable<IArchBenchPlugIn> Add( string aFileName );
 
         /// <summary>
+        /// <summary>Loads all plug-ins contained in the specified file.</summary>
+        /// </summary>
+        /// <param name="aFileName">The assembly's path.</param>
+        /// <param name="aFullName">The plugin's full name.</param>
+        /// <returns>The new added plug-ins</returns>
+        IArchBenchPlugIn Add( string aFileName, string aFullName );
+
+        /// <summary>
         /// Removes the specified plug-in from the manager's collection. 
         /// </summary>
         /// <param name="aPlugIn">a reference to the plug-in</param>
@@ -30,12 +38,12 @@ namespace ArchBench.Server.Kernel
         /// <returns></returns>
         IArchBenchPlugIn Find( string aName );
 
-        /// <summary>
-        /// Returns the plugin at a given index
-        /// </summary>
-        /// <param name="aIndex">The index of the plug-in</param>
-        /// <returns></returns>
-        IArchBenchPlugIn Get( int aIndex );
+        ///// <summary>
+        ///// Returns the plugin at a given index
+        ///// </summary>
+        ///// <param name="aIndex">The index of the plug-in</param>
+        ///// <returns></returns>
+        //IArchBenchPlugIn Get( int aIndex );
 
         /// <summary>
         /// Returns the index of a given plugin
@@ -45,8 +53,17 @@ namespace ArchBench.Server.Kernel
         int IndexOf( IArchBenchPlugIn aPlugIn );
 
         /// <summary>
+        /// Returns the plugin at a given index
+        /// </summary>
+        /// <param name="aIndex">The index of the plug-in</param>
+        /// <returns></returns>
+        IArchBenchPlugIn Get(int aIndex);
+
+        /// <summary>
         /// Unloads and Closes all plug-ins
         /// </summary>
         void Clear();
+
+        string GetFileName( IArchBenchPlugIn aPlugIn );
     }
 }

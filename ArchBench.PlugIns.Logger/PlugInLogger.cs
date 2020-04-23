@@ -1,6 +1,5 @@
 ﻿using HttpServer;
 using HttpServer.Sessions;
-using System;
 
 namespace ArchBench.PlugIns.Logger
 {

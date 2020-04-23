@@ -111,8 +111,6 @@
     </Compile>
     <Compile Include="Configurations\ServerConfig.cs" />
     <Compile Include="Configurations\PlugInConfig.cs" />
-    <Compile Include="IPlugInsManager.cs" />
-    <Compile Include="ModulePlugIns.cs" />
     <Compile Include="PlugInsForm.cs">
       <SubType>Form</SubType>
     </Compile>
