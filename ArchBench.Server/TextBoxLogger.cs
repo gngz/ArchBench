@@ -18,14 +18,27 @@ namespace ArchBench.Server
         public bool    IsNewLine   { get; set; }
 
         // This delegate enables asynchronous calls for setting the text property on a TextBox control.
-        delegate void AppendTextCallback( string aText );
+        delegate void ClearCallback();
+
+        public void Clear()
+        {
+            if (TextBox.InvokeRequired)
+            {
+                ClearCallback callback = Clear;
+                TextBox.Invoke(callback, null );
+            }
+            else
+            {
+                TextBox.Text = string.Empty;
+            }
+        }
 
         public void Write( string aMessage )
         {
             if ( IsNewLine )
             {
                 for ( var i = 0 ; i < IndentLevel ; i++ )
-                    TextBox.AppendText( "    " );
+                    aMessage = "    " + aMessage;
                 IsNewLine = false;
             }
             AppendText( aMessage );
@@ -50,9 +63,12 @@ namespace ArchBench.Server
 
         public void WriteLine( string aMessage )
         {
-            Write( aMessage );
-            WriteLine();
+            IsNewLine = true;
+            Write( aMessage + Environment.NewLine );
         }
+
+        // This delegate enables asynchronous calls for setting the text property on a TextBox control.
+        delegate void AppendTextCallback(string aText);
 
         private void AppendText( string aText )
         {
@@ -65,7 +81,10 @@ namespace ArchBench.Server
             }
             else
             {
-                TextBox.AppendText( aText );
+                lock ( TextBox )
+                {
+                    TextBox.AppendText(aText);
+                }
             }
         }
     }

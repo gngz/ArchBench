@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using HttpServer;
 using HttpServer.HttpModules;
 using HttpServer.Sessions;
@@ -9,6 +11,8 @@ namespace ArchBench.Server.Kernel
 {
     public class PlugInsServer : HttpModule, IArchBenchPlugInHost
     {
+        public static int DefaultPort { get; } = 8081;
+
         public IArchBenchLogger Logger  { get; }
         public IPlugInsManager  Manager { get; }
 
@@ -18,9 +22,28 @@ namespace ArchBench.Server.Kernel
             Manager = new PlugInsManager( this );
         }
 
-        public HttpServer.HttpServer HttpServer { get; private set; }
 
-        public override bool Process(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
+        public Uri Uri => new Uri( $"http://{Address}:{Port}" );
+
+        public string Address
+        {
+            get
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork) return ip.ToString();
+                }
+                return "0.0.0.0";
+
+            }
+        }
+
+        public int Port { get; set; } = DefaultPort;
+
+        private HttpServer.HttpServer HttpServer { get; set; }
+
+        public override bool Process( IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession )
         {
             foreach (var plugin in Manager.PlugIns)
             {

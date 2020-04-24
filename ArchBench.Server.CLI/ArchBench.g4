@@ -1,60 +1,74 @@
+
 grammar ArchBench;
 
-commands    : command NEWLINE
+//commands    : command
+//            ;
+
+command       : HELP
+              | START NUMBER
+              | STOP
+              | INSTALL PATH
+              | ENABLE  NUMBER
+              | ENABLE  IDENTIFIER
+              | DISABLE NUMBER
+              | DISABLE IDENTIFIER
+              | WITH    identifier SET IDENTIFIER ASSIGNMENT identifier
+              | SHOW    identifierOpt
+              | EXIT
+              ;
+
+identifierOpt : 
+              | identifier
+              ;
+
+identifier    : NUMBER
+              | IDENTIFIER
+              ;
+
+HELP        : 'help'
             ;
 
-command     : Start PORT
-            | STOP
-            | INSTALL PATH
-            // | 'with' ( ID | IDENTIFIER ) 'set' IDENTIFIER '=' VALUE
-            // | 'enable' ( ID | IDENTIFIER )
-            // | 'disable' ( ID | IDENTIFIER )
-            // | 'show' ( | ID | IDENTIFIER )
-            // | 'exit'
+START       : 'start'
             ;
-
-// VALUE       : ID
-//             | IDENTIFIER 
-//             ;
-
-// IDENTIFIER  : LETTER ( LETTER | DIGIT | SYMBOL )*
-//             | PRIME LETTER ( LETTER | DIGIT | SYMBOL | SPACE )+ PRIME
-//             ;
-
-// ID          : DIGIT+
-//             ;
-
-// SYMBOL      : [_?]
-//             ;
-
-// SPACE       : [ ]
-//             ;
-
-// PRIME       : [']
-//             ;
-
-// LETTER      : [A-Za-z]
-//             ;
-
-// DIGIT       : [0-9]
-//             ;
-
-PORT        : [0-9]+
-            ;
-
-PATH        : [A-Za-z_.:\\/]+
-            ;
-
-EXIT        : 'exit'
-            ;
-
-fragment Start  : 'start'
-                ;
 
 STOP        : 'stop'
             ;
 
 INSTALL     : 'install'
+            ;
+
+ENABLE      : 'enable'
+            ;
+
+DISABLE     : 'disable'
+            ;
+
+WITH        : 'with'
+            ;
+
+SET         : 'set'
+            ;
+
+SHOW        : 'show'
+            ;
+
+EXIT        : 'exit'
+            ;
+
+ASSIGNMENT  : '='
+            ;
+
+PRIME       : [']
+            ;
+
+IDENTIFIER  : [A-Za-z] ( [A-Za-z] | [0-9] | [_?] )*
+            | PRIME [A-Za-z] ( [A-Za-z] | [0-9] | [_?] | [ ] )+ PRIME
+            ;
+
+NUMBER      : [0-9]+
+            ;
+
+PATH        : [A-Za-z0-9_.:\\/]+
             ;
 
 NEWLINE     : [\n]
