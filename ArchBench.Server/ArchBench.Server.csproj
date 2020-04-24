@@ -111,12 +111,6 @@
     </Compile>
     <Compile Include="Configurations\ServerConfig.cs" />
     <Compile Include="Configurations\PlugInConfig.cs" />
-    <Compile Include="PlugInsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlugInsForm.Designer.cs">
-      <DependentUpon>PlugInsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlugInsSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,9 +123,6 @@
     <Compile Include="UI\SettingsPropertyGridAdapter.cs" />
     <EmbeddedResource Include="ArchServerForm.resx">
       <DependentUpon>ArchServerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlugInsForm.resx">
-      <DependentUpon>PlugInsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlugInsSettingsForm.resx">
       <DependentUpon>PlugInsSettingsForm.cs</DependentUpon>

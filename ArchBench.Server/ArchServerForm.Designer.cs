@@ -66,7 +66,6 @@
             this.mConnectTool = new System.Windows.Forms.ToolStripButton();
             this.mPort = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.mPluginsTool = new System.Windows.Forms.ToolStripButton();
             this.mAppendToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.mRemoveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.mSettingsToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -322,6 +321,7 @@
             // 
             // mToolStrip
             // 
+            this.mToolStrip.ImageScalingSize = new System.Drawing.Size(28, 28);
             this.mToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mOpenToolStripButton,
             this.mSaveToolStripButton,
@@ -329,7 +329,6 @@
             this.mConnectTool,
             this.mPort,
             this.toolStripSeparator6,
-            this.mPluginsTool,
             this.mAppendToolStripButton,
             this.mRemoveToolStripButton,
             this.mSettingsToolStripButton});
@@ -391,19 +390,6 @@
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 42);
-            // 
-            // mPluginsTool
-            // 
-            this.mPluginsTool.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.mPluginsTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mPluginsTool.Image = ((System.Drawing.Image)(resources.GetObject("mPluginsTool.Image")));
-            this.mPluginsTool.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mPluginsTool.Name = "mPluginsTool";
-            this.mPluginsTool.Size = new System.Drawing.Size(40, 36);
-            this.mPluginsTool.Text = "toolStripButton2";
-            this.mPluginsTool.ToolTipText = "Add Plugin";
-            this.mPluginsTool.Visible = false;
-            this.mPluginsTool.Click += new System.EventHandler(this.OnPlugIn);
             // 
             // mAppendToolStripButton
             // 
@@ -609,7 +595,6 @@
         private System.Windows.Forms.ToolStrip mToolStrip;
         private System.Windows.Forms.ToolStripButton mConnectTool;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripButton mPluginsTool;
         private System.Windows.Forms.ToolStripTextBox mPort;
         private System.Windows.Forms.StatusStrip mStatusStrip;
         private System.Windows.Forms.TextBox mOutput;

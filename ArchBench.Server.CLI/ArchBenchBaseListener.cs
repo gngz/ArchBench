@@ -35,18 +35,6 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class ArchBenchBaseListener : IArchBenchListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ArchBenchParser.commands"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCommands([NotNull] ArchBenchParser.CommandsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ArchBenchParser.commands"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCommands([NotNull] ArchBenchParser.CommandsContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ArchBenchParser.command"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -58,6 +46,30 @@ public partial class ArchBenchBaseListener : IArchBenchListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCommand([NotNull] ArchBenchParser.CommandContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ArchBenchParser.identifierOpt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdentifierOpt([NotNull] ArchBenchParser.IdentifierOptContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ArchBenchParser.identifierOpt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdentifierOpt([NotNull] ArchBenchParser.IdentifierOptContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ArchBenchParser.identifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdentifier([NotNull] ArchBenchParser.IdentifierContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ArchBenchParser.identifier"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdentifier([NotNull] ArchBenchParser.IdentifierContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

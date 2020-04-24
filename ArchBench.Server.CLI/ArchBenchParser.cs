@@ -36,19 +36,23 @@ public partial class ArchBenchParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		PORT=1, PATH=2, EXIT=3, STOP=4, INSTALL=5, NEWLINE=6, WHITESPACE=7, Start=8;
+		HELP=1, START=2, STOP=3, INSTALL=4, ENABLE=5, DISABLE=6, WITH=7, SET=8, 
+		SHOW=9, EXIT=10, ASSIGNMENT=11, PRIME=12, IDENTIFIER=13, NUMBER=14, PATH=15, 
+		NEWLINE=16, WHITESPACE=17;
 	public const int
-		RULE_commands = 0, RULE_command = 1;
+		RULE_command = 0, RULE_identifierOpt = 1, RULE_identifier = 2;
 	public static readonly string[] ruleNames = {
-		"commands", "command"
+		"command", "identifierOpt", "identifier"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, "'exit'", "'stop'", "'install'"
+		null, "'help'", "'start'", "'stop'", "'install'", "'enable'", "'disable'", 
+		"'with'", "'set'", "'show'", "'exit'", "'='"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "PORT", "PATH", "EXIT", "STOP", "INSTALL", "NEWLINE", "WHITESPACE", 
-		"Start"
+		null, "HELP", "START", "STOP", "INSTALL", "ENABLE", "DISABLE", "WITH", 
+		"SET", "SHOW", "EXIT", "ASSIGNMENT", "PRIME", "IDENTIFIER", "NUMBER", 
+		"PATH", "NEWLINE", "WHITESPACE"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -82,59 +86,30 @@ public partial class ArchBenchParser : Parser {
 		Interpreter = new ParserATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
 	}
 
-	public partial class CommandsContext : ParserRuleContext {
-		public CommandContext command() {
-			return GetRuleContext<CommandContext>(0);
-		}
-		public ITerminalNode NEWLINE() { return GetToken(ArchBenchParser.NEWLINE, 0); }
-		public CommandsContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_commands; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			IArchBenchListener typedListener = listener as IArchBenchListener;
-			if (typedListener != null) typedListener.EnterCommands(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IArchBenchListener typedListener = listener as IArchBenchListener;
-			if (typedListener != null) typedListener.ExitCommands(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IArchBenchVisitor<TResult> typedVisitor = visitor as IArchBenchVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCommands(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public CommandsContext commands() {
-		CommandsContext _localctx = new CommandsContext(Context, State);
-		EnterRule(_localctx, 0, RULE_commands);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 4; command();
-			State = 5; Match(NEWLINE);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
 	public partial class CommandContext : ParserRuleContext {
-		public ITerminalNode Start() { return GetToken(ArchBenchParser.Start, 0); }
-		public ITerminalNode PORT() { return GetToken(ArchBenchParser.PORT, 0); }
+		public ITerminalNode HELP() { return GetToken(ArchBenchParser.HELP, 0); }
+		public ITerminalNode START() { return GetToken(ArchBenchParser.START, 0); }
+		public ITerminalNode NUMBER() { return GetToken(ArchBenchParser.NUMBER, 0); }
 		public ITerminalNode STOP() { return GetToken(ArchBenchParser.STOP, 0); }
 		public ITerminalNode INSTALL() { return GetToken(ArchBenchParser.INSTALL, 0); }
 		public ITerminalNode PATH() { return GetToken(ArchBenchParser.PATH, 0); }
+		public ITerminalNode ENABLE() { return GetToken(ArchBenchParser.ENABLE, 0); }
+		public ITerminalNode IDENTIFIER() { return GetToken(ArchBenchParser.IDENTIFIER, 0); }
+		public ITerminalNode DISABLE() { return GetToken(ArchBenchParser.DISABLE, 0); }
+		public ITerminalNode WITH() { return GetToken(ArchBenchParser.WITH, 0); }
+		public IdentifierContext[] identifier() {
+			return GetRuleContexts<IdentifierContext>();
+		}
+		public IdentifierContext identifier(int i) {
+			return GetRuleContext<IdentifierContext>(i);
+		}
+		public ITerminalNode SET() { return GetToken(ArchBenchParser.SET, 0); }
+		public ITerminalNode ASSIGNMENT() { return GetToken(ArchBenchParser.ASSIGNMENT, 0); }
+		public ITerminalNode SHOW() { return GetToken(ArchBenchParser.SHOW, 0); }
+		public IdentifierOptContext identifierOpt() {
+			return GetRuleContext<IdentifierOptContext>(0);
+		}
+		public ITerminalNode EXIT() { return GetToken(ArchBenchParser.EXIT, 0); }
 		public CommandContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -158,29 +133,144 @@ public partial class ArchBenchParser : Parser {
 	[RuleVersion(0)]
 	public CommandContext command() {
 		CommandContext _localctx = new CommandContext(Context, State);
-		EnterRule(_localctx, 2, RULE_command);
+		EnterRule(_localctx, 0, RULE_command);
 		try {
-			State = 12;
+			State = 30;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case Start:
+			switch ( Interpreter.AdaptivePredict(TokenStream,0,Context) ) {
+			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 7; Match(Start);
-				State = 8; Match(PORT);
+				State = 6; Match(HELP);
 				}
 				break;
-			case STOP:
+			case 2:
 				EnterOuterAlt(_localctx, 2);
+				{
+				State = 7; Match(START);
+				State = 8; Match(NUMBER);
+				}
+				break;
+			case 3:
+				EnterOuterAlt(_localctx, 3);
 				{
 				State = 9; Match(STOP);
 				}
 				break;
-			case INSTALL:
-				EnterOuterAlt(_localctx, 3);
+			case 4:
+				EnterOuterAlt(_localctx, 4);
 				{
 				State = 10; Match(INSTALL);
 				State = 11; Match(PATH);
+				}
+				break;
+			case 5:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 12; Match(ENABLE);
+				State = 13; Match(NUMBER);
+				}
+				break;
+			case 6:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 14; Match(ENABLE);
+				State = 15; Match(IDENTIFIER);
+				}
+				break;
+			case 7:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 16; Match(DISABLE);
+				State = 17; Match(NUMBER);
+				}
+				break;
+			case 8:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 18; Match(DISABLE);
+				State = 19; Match(IDENTIFIER);
+				}
+				break;
+			case 9:
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 20; Match(WITH);
+				State = 21; identifier();
+				State = 22; Match(SET);
+				State = 23; Match(IDENTIFIER);
+				State = 24; Match(ASSIGNMENT);
+				State = 25; identifier();
+				}
+				break;
+			case 10:
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 27; Match(SHOW);
+				State = 28; identifierOpt();
+				}
+				break;
+			case 11:
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 29; Match(EXIT);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IdentifierOptContext : ParserRuleContext {
+		public IdentifierContext identifier() {
+			return GetRuleContext<IdentifierContext>(0);
+		}
+		public IdentifierOptContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_identifierOpt; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IArchBenchListener typedListener = listener as IArchBenchListener;
+			if (typedListener != null) typedListener.EnterIdentifierOpt(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IArchBenchListener typedListener = listener as IArchBenchListener;
+			if (typedListener != null) typedListener.ExitIdentifierOpt(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IArchBenchVisitor<TResult> typedVisitor = visitor as IArchBenchVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIdentifierOpt(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IdentifierOptContext identifierOpt() {
+		IdentifierOptContext _localctx = new IdentifierOptContext(Context, State);
+		EnterRule(_localctx, 2, RULE_identifierOpt);
+		try {
+			State = 34;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case Eof:
+				EnterOuterAlt(_localctx, 1);
+				{
+				}
+				break;
+			case IDENTIFIER:
+			case NUMBER:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 33; identifier();
 				}
 				break;
 			default:
@@ -198,21 +288,97 @@ public partial class ArchBenchParser : Parser {
 		return _localctx;
 	}
 
+	public partial class IdentifierContext : ParserRuleContext {
+		public ITerminalNode NUMBER() { return GetToken(ArchBenchParser.NUMBER, 0); }
+		public ITerminalNode IDENTIFIER() { return GetToken(ArchBenchParser.IDENTIFIER, 0); }
+		public IdentifierContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_identifier; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IArchBenchListener typedListener = listener as IArchBenchListener;
+			if (typedListener != null) typedListener.EnterIdentifier(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IArchBenchListener typedListener = listener as IArchBenchListener;
+			if (typedListener != null) typedListener.ExitIdentifier(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IArchBenchVisitor<TResult> typedVisitor = visitor as IArchBenchVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIdentifier(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IdentifierContext identifier() {
+		IdentifierContext _localctx = new IdentifierContext(Context, State);
+		EnterRule(_localctx, 4, RULE_identifier);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 36;
+			_la = TokenStream.LA(1);
+			if ( !(_la==IDENTIFIER || _la==NUMBER) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\n', '\x11', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
-		'\t', '\x3', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x5', '\x3', '\xF', 
-		'\n', '\x3', '\x3', '\x3', '\x2', '\x2', '\x4', '\x2', '\x4', '\x2', '\x2', 
-		'\x2', '\x10', '\x2', '\x6', '\x3', '\x2', '\x2', '\x2', '\x4', '\xE', 
-		'\x3', '\x2', '\x2', '\x2', '\x6', '\a', '\x5', '\x4', '\x3', '\x2', '\a', 
-		'\b', '\a', '\b', '\x2', '\x2', '\b', '\x3', '\x3', '\x2', '\x2', '\x2', 
-		'\t', '\n', '\a', '\n', '\x2', '\x2', '\n', '\xF', '\a', '\x3', '\x2', 
-		'\x2', '\v', '\xF', '\a', '\x6', '\x2', '\x2', '\f', '\r', '\a', '\a', 
-		'\x2', '\x2', '\r', '\xF', '\a', '\x4', '\x2', '\x2', '\xE', '\t', '\x3', 
-		'\x2', '\x2', '\x2', '\xE', '\v', '\x3', '\x2', '\x2', '\x2', '\xE', '\f', 
-		'\x3', '\x2', '\x2', '\x2', '\xF', '\x5', '\x3', '\x2', '\x2', '\x2', 
-		'\x3', '\xE',
+		'\x5964', '\x3', '\x13', ')', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x3', '\x2', '\x3', '\x2', '\x3', 
+		'\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', 
+		'\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', 
+		'\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', 
+		'\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', 
+		'\x2', '\x3', '\x2', '\x5', '\x2', '!', '\n', '\x2', '\x3', '\x3', '\x3', 
+		'\x3', '\x5', '\x3', '%', '\n', '\x3', '\x3', '\x4', '\x3', '\x4', '\x3', 
+		'\x4', '\x2', '\x2', '\x5', '\x2', '\x4', '\x6', '\x2', '\x3', '\x3', 
+		'\x2', '\xF', '\x10', '\x2', '\x30', '\x2', ' ', '\x3', '\x2', '\x2', 
+		'\x2', '\x4', '$', '\x3', '\x2', '\x2', '\x2', '\x6', '&', '\x3', '\x2', 
+		'\x2', '\x2', '\b', '!', '\a', '\x3', '\x2', '\x2', '\t', '\n', '\a', 
+		'\x4', '\x2', '\x2', '\n', '!', '\a', '\x10', '\x2', '\x2', '\v', '!', 
+		'\a', '\x5', '\x2', '\x2', '\f', '\r', '\a', '\x6', '\x2', '\x2', '\r', 
+		'!', '\a', '\x11', '\x2', '\x2', '\xE', '\xF', '\a', '\a', '\x2', '\x2', 
+		'\xF', '!', '\a', '\x10', '\x2', '\x2', '\x10', '\x11', '\a', '\a', '\x2', 
+		'\x2', '\x11', '!', '\a', '\xF', '\x2', '\x2', '\x12', '\x13', '\a', '\b', 
+		'\x2', '\x2', '\x13', '!', '\a', '\x10', '\x2', '\x2', '\x14', '\x15', 
+		'\a', '\b', '\x2', '\x2', '\x15', '!', '\a', '\xF', '\x2', '\x2', '\x16', 
+		'\x17', '\a', '\t', '\x2', '\x2', '\x17', '\x18', '\x5', '\x6', '\x4', 
+		'\x2', '\x18', '\x19', '\a', '\n', '\x2', '\x2', '\x19', '\x1A', '\a', 
+		'\xF', '\x2', '\x2', '\x1A', '\x1B', '\a', '\r', '\x2', '\x2', '\x1B', 
+		'\x1C', '\x5', '\x6', '\x4', '\x2', '\x1C', '!', '\x3', '\x2', '\x2', 
+		'\x2', '\x1D', '\x1E', '\a', '\v', '\x2', '\x2', '\x1E', '!', '\x5', '\x4', 
+		'\x3', '\x2', '\x1F', '!', '\a', '\f', '\x2', '\x2', ' ', '\b', '\x3', 
+		'\x2', '\x2', '\x2', ' ', '\t', '\x3', '\x2', '\x2', '\x2', ' ', '\v', 
+		'\x3', '\x2', '\x2', '\x2', ' ', '\f', '\x3', '\x2', '\x2', '\x2', ' ', 
+		'\xE', '\x3', '\x2', '\x2', '\x2', ' ', '\x10', '\x3', '\x2', '\x2', '\x2', 
+		' ', '\x12', '\x3', '\x2', '\x2', '\x2', ' ', '\x14', '\x3', '\x2', '\x2', 
+		'\x2', ' ', '\x16', '\x3', '\x2', '\x2', '\x2', ' ', '\x1D', '\x3', '\x2', 
+		'\x2', '\x2', ' ', '\x1F', '\x3', '\x2', '\x2', '\x2', '!', '\x3', '\x3', 
+		'\x2', '\x2', '\x2', '\"', '%', '\x3', '\x2', '\x2', '\x2', '#', '%', 
+		'\x5', '\x6', '\x4', '\x2', '$', '\"', '\x3', '\x2', '\x2', '\x2', '$', 
+		'#', '\x3', '\x2', '\x2', '\x2', '%', '\x5', '\x3', '\x2', '\x2', '\x2', 
+		'&', '\'', '\t', '\x2', '\x2', '\x2', '\'', '\a', '\x3', '\x2', '\x2', 
+		'\x2', '\x4', ' ', '$',
 	};
 
 	public static readonly ATN _ATN =

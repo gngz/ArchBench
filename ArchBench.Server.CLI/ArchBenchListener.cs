@@ -31,16 +31,6 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IArchBenchListener : IParseTreeListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ArchBenchParser.commands"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterCommands([NotNull] ArchBenchParser.CommandsContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ArchBenchParser.commands"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitCommands([NotNull] ArchBenchParser.CommandsContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ArchBenchParser.command"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -50,4 +40,24 @@ public interface IArchBenchListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCommand([NotNull] ArchBenchParser.CommandContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ArchBenchParser.identifierOpt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifierOpt([NotNull] ArchBenchParser.IdentifierOptContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ArchBenchParser.identifierOpt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifierOpt([NotNull] ArchBenchParser.IdentifierOptContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ArchBenchParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifier([NotNull] ArchBenchParser.IdentifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ArchBenchParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifier([NotNull] ArchBenchParser.IdentifierContext context);
 }

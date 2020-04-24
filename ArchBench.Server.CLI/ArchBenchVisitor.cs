@@ -32,15 +32,21 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IArchBenchVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ArchBenchParser.commands"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCommands([NotNull] ArchBenchParser.CommandsContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="ArchBenchParser.command"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCommand([NotNull] ArchBenchParser.CommandContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ArchBenchParser.identifierOpt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifierOpt([NotNull] ArchBenchParser.IdentifierOptContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ArchBenchParser.identifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifier([NotNull] ArchBenchParser.IdentifierContext context);
 }

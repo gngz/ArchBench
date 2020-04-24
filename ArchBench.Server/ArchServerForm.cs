@@ -149,11 +149,6 @@ namespace ArchBench.Server
             }
         }
 
-        private void OnPlugIn( object sender, EventArgs e )
-        {
-            new PlugInsForm( Server.Manager ).ShowDialog();
-        }
-
         private int GetPort()
         {
             return int.TryParse( mPort.Text, out var port ) ? port : PlugInsServer.DefaultPort;
