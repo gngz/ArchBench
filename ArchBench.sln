@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchBench.Server.Kernel", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchBench.Server.CLI", "ArchBench.Server.CLI\ArchBench.Server.CLI.csproj", "{716CD1EF-827B-4C49-AB37-03825FF6BD02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.PlugIns.BrokerRegister", "ArchBench.PlugIns.BrokerRegister\ArchBench.PlugIns.BrokerRegister.csproj", "{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{716CD1EF-827B-4C49-AB37-03825FF6BD02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{716CD1EF-827B-4C49-AB37-03825FF6BD02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{716CD1EF-827B-4C49-AB37-03825FF6BD02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
