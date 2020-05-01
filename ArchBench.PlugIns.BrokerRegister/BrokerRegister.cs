@@ -46,6 +46,17 @@ namespace ArchBench.PlugIns.BrokerRegister
             {
                 WebClient wb = new WebClient();
 
+                if (string.IsNullOrEmpty(Settings["BrokerAddress"]))
+                {
+                    Host.Logger.WriteLine("The Broker's Address is not defined.");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(Settings["ServerPort"]))
+                {
+                    Host.Logger.WriteLine("The Server's Port is not defined.");
+                    return;
+                }
 
 
                 if (OnService)
@@ -60,9 +71,9 @@ namespace ArchBench.PlugIns.BrokerRegister
 
                 }
             }
-            catch (Exception ex)
+            catch (WebException ex)
             {
-                // TODO some work here
+                Host.Logger.WriteLine("WebClient Exception: {0}" , ex.Message);
             }
         }
 
