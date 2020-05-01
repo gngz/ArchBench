@@ -105,7 +105,7 @@ namespace ArchBench.PlugIns.Broker
                 var headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
                 memStream.Write(headerbytes, 0, headerbytes.Length);
 
-                byte[] fileBuffer = File.ReadAllBytes(file.Filename);
+                byte[] fileBuffer = File.ReadAllBytes(path);
                 memStream.Write(fileBuffer, 0, fileBuffer.Length);
             }
 

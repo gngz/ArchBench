@@ -131,6 +131,14 @@ namespace ArchBench.PlugIns.Broker
                     writer.Flush();
                 }
             }
+            catch(Exception ex)
+            {
+                Logger.WriteLine("Exception! - {0}: {1}", ex.GetType().Name, ex.Message);
+                aResponse.Status = HttpStatusCode.InternalServerError;
+                StreamWriter writer = new StreamWriter(aResponse.Body);
+                writer.Write($"{ex.GetType().Name}: {ex.Message}");
+                writer.Flush();
+            }
             return true;
         }
 
