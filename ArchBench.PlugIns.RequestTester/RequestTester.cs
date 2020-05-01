@@ -76,11 +76,14 @@ namespace ArchBench.PlugIns.RequestTester
 
         public void displayCookies(IHttpRequest aRequest, StreamWriter aWriter)
         {
-            aWriter.WriteLine($"<h2>Cookies</h2>");
-
-            foreach(RequestCookie cookie in aRequest.Cookies)
+            if (aRequest.Cookies.Count > 0)
             {
-                aWriter.WriteLine($"<p><strong>{cookie.Name}:</strong> {cookie.Value}</p>");
+                aWriter.WriteLine($"<h2>Cookies</h2>");
+
+                foreach (RequestCookie cookie in aRequest.Cookies)
+                {
+                    aWriter.WriteLine($"<p><strong>{cookie.Name}:</strong> {cookie.Value}</p>");
+                }
             }
         }
 
@@ -90,9 +93,10 @@ namespace ArchBench.PlugIns.RequestTester
 
             if(!string.IsNullOrEmpty(formData))
             {
-                aWriter.WriteLine($"<h2>Form Data</h2>");
-                aWriter.WriteLine(formData);
-                aWriter.WriteLine($"<br>");
+                foreach(HttpInputItem input in aRequest.Form)
+                {
+                    aWriter.WriteLine($"<p><strong>{input.Name}:</strong> {input.Value}</p>");
+                }
             }
 
         }
