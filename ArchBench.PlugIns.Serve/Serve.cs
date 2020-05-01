@@ -58,7 +58,7 @@ namespace ArchBench.PlugIns.Serve
             if (aRequest.Method != Method.Get)
             {
                 MethodNotAllowed(aResponse);
-                return false;
+                return true;
             }
 
             if (Directory.Exists(completePath))
@@ -71,7 +71,6 @@ namespace ArchBench.PlugIns.Serve
                 }
                 else
                 {
-                    logger.WriteLine("HERERERERE");
                     RenderIndex(aResponse, completePath);
                     return true;
                 }
@@ -81,27 +80,27 @@ namespace ArchBench.PlugIns.Serve
             if (!File.Exists(completePath))
             {
                 NotFound(aResponse);
-                return false;
             }
             else
             {
                 ServeFile(aResponse, completePath);
-                return true;
+                
             }
+
+            return true;
 
 
         }
 
         public void ServeFile(IHttpResponse aResponse, string aPath)
         {
-
             var fileRS = File.OpenRead(aPath);
-
 
             aResponse.ContentType = MimeHelper.GetMimeFromExtension(Path.GetExtension(aPath));
 
             fileRS.CopyTo(aResponse.Body);
 
+            fileRS.Close();
 
         }
 
