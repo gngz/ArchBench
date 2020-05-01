@@ -105,10 +105,11 @@ namespace ArchBench.PlugIns.RequestTester
 
                 foreach(HttpFile file in aRequest.Form.Files)
                 {
-                    aWriter.WriteLine($"<p><strong>Name:</strong> {file.Name}</p>");
+                    
+                    aWriter.WriteLine($"<p><strong>Field Name:</strong> {file.Name}</p>");
                     aWriter.WriteLine($"<p><strong>Content Type:</strong> {file.ContentType}</p>");
                     aWriter.WriteLine($"<p><strong>Client Directory:</strong> {file.Filename}</p>");
-                    aWriter.WriteLine($"<p><strong>Server Directory:</strong> {file.UploadFilename}</p>");
+                    aWriter.WriteLine($"<p><strong>Name:</strong> {file.UploadFilename}</p>");
                     aWriter.WriteLine($"<hr>");
                 }
 
