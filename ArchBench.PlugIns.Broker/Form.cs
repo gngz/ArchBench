@@ -47,6 +47,26 @@ namespace ArchBench.PlugIns.Broker
 
         }
 
+        private static string RenameFile(String filePath, String newName)
+        {
+           var newPath = $"{Path.GetDirectoryName(filePath)}\\{newName}";
+           MoveWithReplace(filePath, newPath);
+           return newPath;
+        }
+
+        private static void MoveWithReplace(string sourceFileName, string destFileName)
+        {
+
+            //first, delete target file if exists, as File.Move() does not support overwrite
+            if (File.Exists(destFileName))
+            {
+                File.Delete(destFileName);
+            }
+
+            File.Move(sourceFileName, destFileName);
+
+        }
+
         public static void SendMultipart( HttpForm aForm ,HttpWebRequest aRequest)
         {
             // string boundary = "----------------------------" + DateTime.Now.Ticks.ToString("x");
@@ -57,7 +77,7 @@ namespace ArchBench.PlugIns.Broker
 
             aRequest.ContentType = $"multipart/form-data; boundary={boundary}";
             aRequest.Method = "POST";
-            aRequest.KeepAlive = true;
+          //  aRequest.KeepAlive = true;
 
             Stream memStream = new System.IO.MemoryStream();
 
@@ -75,12 +95,13 @@ namespace ArchBench.PlugIns.Broker
       
             string headerTemplate =
                 "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\n" +
-                "Content-Type: application/octet-stream\r\n\r\n";
+                "Content-Type: {2}\r\n\r\n";
 
             foreach(HttpFile file in aForm.Files)
             {
+                var path = RenameFile(file.Filename, file.UploadFilename);
                 memStream.Write(boundarybytes, 0, boundarybytes.Length); // Boundary
-                var header = string.Format(headerTemplate, file.Name, file.Filename); //Maybe  UploadFileName
+                var header = string.Format(headerTemplate, file.Name, path, file.ContentType); //Maybe  UploadFileName
                 var headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
                 memStream.Write(headerbytes, 0, headerbytes.Length);
 
