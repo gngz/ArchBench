@@ -31,6 +31,28 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchBench.Server.CLI", "Arc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.PlugIns.BrokerRegister", "ArchBench.PlugIns.BrokerRegister\ArchBench.PlugIns.BrokerRegister.csproj", "{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{6EF97D66-C243-4FC8-AE22-1A6507312EEE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observable", "Observable", "{E28D8754-D4C2-4DA6-97A7-C88DD8A708D9}"
+	ProjectSection(SolutionItems) = preProject
+		IObservable.cs = IObservable.cs
+		Observable.cs = Observable.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RequestResponse", "RequestResponse", "{DD6D06BC-A177-482D-BBC4-59842B6CC0BD}"
+	ProjectSection(SolutionItems) = preProject
+		IRequestResponseEndpoint.cs = IRequestResponseEndpoint.cs
+		RequestResponse.cs = RequestResponse.cs
+		RequestResponseEndpoint.cs = RequestResponseEndpoint.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Session", "Session", "{41762C0D-42DA-4C0F-A481-7EF5626574A1}"
+	ProjectSection(SolutionItems) = preProject
+		Session.cs = Session.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchBench.PlugIns.Broker", "ArchBench.PlugIns.Broker\ArchBench.PlugIns.Broker.csproj", "{C1F6A550-3C3C-46C8-8D5C-121788835D47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +91,10 @@ Global
 		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0541771-45F9-42DB-AA0B-8B4ACA3D5811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1F6A550-3C3C-46C8-8D5C-121788835D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1F6A550-3C3C-46C8-8D5C-121788835D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1F6A550-3C3C-46C8-8D5C-121788835D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1F6A550-3C3C-46C8-8D5C-121788835D47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +103,9 @@ Global
 		{56821931-D69A-4220-9D11-E1BADE7B4441} = {5DF8506A-53A8-4D38-9794-83EA082925E5}
 		{5DE82443-CF9F-46A1-842C-9C123A14D96A} = {5DF8506A-53A8-4D38-9794-83EA082925E5}
 		{6DF65D59-BFC1-4566-9F1C-CE1E1FEDC752} = {5DF8506A-53A8-4D38-9794-83EA082925E5}
+		{E28D8754-D4C2-4DA6-97A7-C88DD8A708D9} = {6EF97D66-C243-4FC8-AE22-1A6507312EEE}
+		{DD6D06BC-A177-482D-BBC4-59842B6CC0BD} = {6EF97D66-C243-4FC8-AE22-1A6507312EEE}
+		{41762C0D-42DA-4C0F-A481-7EF5626574A1} = {6EF97D66-C243-4FC8-AE22-1A6507312EEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C42B325A-90CB-42B0-9191-4873159191C3}
