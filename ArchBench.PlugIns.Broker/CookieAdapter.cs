@@ -1,7 +1,7 @@
 ﻿using System;
 using HttpServer;
 using System.Net;
-namespace ArchBench.PlugIns.Broker.Utils
+namespace ArchBench.PlugIns.Broker
 {
     public class CookieAdapter 
     {

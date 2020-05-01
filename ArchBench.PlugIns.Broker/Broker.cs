@@ -1,5 +1,4 @@
 ﻿using ArchBench.PlugIns.Broker.Strategies;
-using ArchBench.PlugIns.Broker.Utils;
 using ArchBench.PlugIns.Utils.RequestResponse;
 using ArchBench.PlugIns.Utils.Session;
 using HttpServer;
@@ -184,11 +183,15 @@ namespace ArchBench.PlugIns.Broker
 
             if (contentType != null) request.ContentType = clientRequest.Headers["Content-Type"];
 
-            if (clientRequest.Method != Methods.Get)
+            if (clientRequest.Method != Method.Get)
             {
-                if (contentType != null && Form.IsFormContentType(contentType))
+                if (Form.IsUrlEncoded(contentType))
                 {
                     Form.SendForm(clientRequest.Form, request);
+                }
+                else if(Form.IsMultipart(contentType))
+                {
+                    Form.SendMultipart(clientRequest.Form, request);
                 }
                 else
                 {
