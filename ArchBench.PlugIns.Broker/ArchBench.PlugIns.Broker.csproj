@@ -1,7 +1,32 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Utils\Observable\IObservable.cs" Link="Utils\Observable\IObservable.cs" />
+    <Compile Include="..\Utils\Observable\Observable.cs" Link="Utils\Observable\Observable.cs" />
+    <Compile Include="..\Utils\RequestResponse\IRequestResponseEndpoint.cs" Link="Utils\RequestResponse\IRequestResponseEndpoint.cs" />
+    <Compile Include="..\Utils\RequestResponse\RequestResponse.cs" Link="Utils\RequestResponse\RequestResponse.cs" />
+    <Compile Include="..\Utils\RequestResponse\RequestResponseEndpoint.cs" Link="Utils\RequestResponse\RequestResponseEndpoint.cs" />
+    <Compile Include="..\Utils\Session\Session.cs" Link="Utils\Session\Session.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArchBench.PlugIns\ArchBench.PlugIns.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HttpServer">
+      <HintPath>..\HttpServer\HttpServer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utils\Session\" />
+    <Folder Include="Utils\RequestResponse\" />
+    <Folder Include="Utils\Observable\" />
+  </ItemGroup>
 
 </Project>
