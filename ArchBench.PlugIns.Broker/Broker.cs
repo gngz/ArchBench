@@ -139,6 +139,13 @@ namespace ArchBench.PlugIns.Broker
         {
             Stream stream = serverResponse.GetResponseStream();
 
+            foreach(string header in serverResponse.Headers.AllKeys)
+            {
+                var value = serverResponse.Headers[header];
+
+                clientResponse.AddHeader(header, value);
+            }
+
             if (serverResponse.ContentType.Equals(ContentType.Html))
             {
                 StreamReader streamReader = new StreamReader(stream);
@@ -171,14 +178,9 @@ namespace ArchBench.PlugIns.Broker
             request.Method = clientRequest.Method;
             request.UserAgent = clientRequest.Headers["User-Agent"];
             request.CookieContainer = new CookieContainer();
-
+            request.AllowAutoRedirect = false;
             // request.Headers = aRequest.Headers; TODO dá erro por causa do user Agent
-            /*
-            foreach (var headerKey in aRequest.Headers.AllKeys)
-            {
-                request.Headers.Add(headerKey, aRequest.Headers[headerKey]);
-              
-            }*/
+
 
 
             if (contentType != null) request.ContentType = clientRequest.Headers["Content-Type"];
