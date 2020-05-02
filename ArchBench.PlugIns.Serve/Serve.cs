@@ -34,12 +34,10 @@ namespace ArchBench.PlugIns.Serve
 
         public void Initialize()
         {
-            Settings["folder"] = @"/home/gngz/site";
-            Settings["log"] = "false";
+            Settings["folder"] = @"C:/";
         }
         public bool Process(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
         {
-            var logger = this.Host.Logger;
             var requestedUri = aRequest.UriPath.Remove(0, 1);
 
 
@@ -47,10 +45,6 @@ namespace ArchBench.PlugIns.Serve
             var baseFolder = Settings["folder"];
             var completePath = Path.Combine(baseFolder, requestedUri);
 
-            logger.WriteLine("Processing a request");
-            logger.WriteLine($"PATH: {baseFolder}");
-            logger.WriteLine($"URI PATH: {requestedUri}");
-            logger.WriteLine($"Complete PATH: {completePath}");
 
             aResponse.AddHeader("X-Powered-By", "Serve for ArchBench");
 
@@ -148,7 +142,7 @@ namespace ArchBench.PlugIns.Serve
             writer.WriteLine(result);
             writer.Flush();
 
-            //this.Host.Logger.WriteLine();
+       
         }
 
         public string GetResourceFileContentAsString(string fileName)

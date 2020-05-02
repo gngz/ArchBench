@@ -46,7 +46,7 @@ namespace ArchBench.PlugIns.Broker
             _requestResponse.Subscribe(new RequestResponseEndpoint { Endpoint = "/broker/unregister", Handler = UnregisterServer });
             _requestResponse.Subscribe(new RequestResponseEndpoint { Endpoint = "*", Handler = ProcessRequest });
 
-            this.Settings["Algorithim"] = "roundrobin";
+            this.Settings["Algorithm"] = "roundrobin";
 
             session = new Session("_archbench_broker");
         }
@@ -54,7 +54,7 @@ namespace ArchBench.PlugIns.Broker
         public bool Process(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
         {
 
-            Logger.WriteLine(aRequest.UriPath);
+
 
             return _requestResponse.Emit(aRequest.UriPath, aRequest, aResponse, aSession);
         }
@@ -63,9 +63,11 @@ namespace ArchBench.PlugIns.Broker
         {
             var reader = new StreamReader(aRequest.Body);
             var address = reader.ReadToEnd();
-            _servers.Add(address);
-            Logger.WriteLine($"Server {address} added!");
-
+            if(!_servers.Contains(address))
+            {
+                _servers.Add(address);
+                Logger.WriteLine($"Server {address} added!");
+            }
             return true;
 
         }
@@ -74,9 +76,7 @@ namespace ArchBench.PlugIns.Broker
         {
             var reader = new StreamReader(aRequest.Body);
             var address = reader.ReadToEnd();
-            _servers.Remove(address);
-            Logger.WriteLine($"Server {address} removed!");
-
+            if(_servers.Remove(address)) Logger.WriteLine($"Server {address} removed!");
             return true;
 
         }
@@ -84,7 +84,7 @@ namespace ArchBench.PlugIns.Broker
         private IServerDispatcherStrategy ChooseStrategy(Session aSession)
         {
             IServerDispatcherStrategy roundrobin = RoundrobinStrategy.GetInstance(_servers);
-            switch (this.Settings["Algorithim"])
+            switch (this.Settings["Algorithm"])
             {
                 case "roundrobin": return roundrobin;
                 case "sameserver": return new SameServerStrategy(roundrobin, aSession);
@@ -94,7 +94,7 @@ namespace ArchBench.PlugIns.Broker
 
         private bool ProcessRequest(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
         {
-            //   int retrys = 0;
+
         
             session.HandleSession(aRequest, aResponse);
 
@@ -104,6 +104,7 @@ namespace ArchBench.PlugIns.Broker
 
             if (index == -1) return false;
 
+            Logger.WriteLine("Forwarding {0} {1} to server {2}.",aRequest.Method, aRequest.UriPath, _servers[index]);
 
             HttpWebRequest request = PrepareServerRequest(aRequest, index);
 
