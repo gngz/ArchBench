@@ -93,7 +93,8 @@ namespace ArchBench.PlugIns.RequestTester
 
             if(!string.IsNullOrEmpty(formData))
             {
-                foreach(HttpInputItem input in aRequest.Form)
+                aWriter.WriteLine($"<h2>Form Data</h2>");
+                foreach (HttpInputItem input in aRequest.Form)
                 {
                     aWriter.WriteLine($"<p><strong>{input.Name}:</strong> {input.Value}</p>");
                 }
