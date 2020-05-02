@@ -18,10 +18,13 @@ namespace ArchBench.PlugIns.Broker.Strategies
 
         public int GetNextServer()
         {
-        
-            if (_session.Vars["server"] == null) _session.Vars["server"] = _newClientStrategy.GetNextServer();
 
-            return (int) _session.Vars["server"];
+                if (!_session.Vars.ContainsKey("server")) _session.Vars["server"] = _newClientStrategy.GetNextServer();
+
+                return (int)_session.Vars["server"];
+
+
+
         }
     }
 }

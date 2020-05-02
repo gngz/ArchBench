@@ -42,13 +42,13 @@ namespace ArchBench.PlugIns.Utils.Session
                 }
                 else
                 {
-                    Vars = null;
+                    StartSession(aResponse);
                 }
 
             }
             else
             {
-                Vars = null;
+                StartSession(aResponse);
             }
 
         }

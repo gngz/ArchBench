@@ -3,6 +3,7 @@ using ArchBench.PlugIns.Utils.RequestResponse;
 using ArchBench.PlugIns.Utils.Session;
 using HttpServer;
 using HttpServer.Sessions;
+using HttpServer.Authentication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +31,9 @@ namespace ArchBench.PlugIns.Broker
 
         private RequestResponse _requestResponse = new RequestResponse();
 
+        private Session session;
+
+
         public void Dispose()
         {
 
@@ -43,11 +47,13 @@ namespace ArchBench.PlugIns.Broker
             _requestResponse.Subscribe(new RequestResponseEndpoint { Endpoint = "*", Handler = ProcessRequest });
 
             this.Settings["Algorithim"] = "roundrobin";
+
+            session = new Session("_archbench_broker");
         }
 
         public bool Process(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
         {
-            // TODO INFORMATION
+
             Logger.WriteLine(aRequest.UriPath);
 
             return _requestResponse.Emit(aRequest.UriPath, aRequest, aResponse, aSession);
@@ -77,7 +83,7 @@ namespace ArchBench.PlugIns.Broker
 
         private IServerDispatcherStrategy ChooseStrategy(Session aSession)
         {
-            IServerDispatcherStrategy roundrobin = new RoundrobinStrategy(_servers);
+            IServerDispatcherStrategy roundrobin = RoundrobinStrategy.GetInstance(_servers);
             switch (this.Settings["Algorithim"])
             {
                 case "roundrobin": return roundrobin;
@@ -89,7 +95,7 @@ namespace ArchBench.PlugIns.Broker
         private bool ProcessRequest(IHttpRequest aRequest, IHttpResponse aResponse, IHttpSession aSession)
         {
             //   int retrys = 0;
-            Session session = new Session("_broker_session");
+        
             session.HandleSession(aRequest, aResponse);
 
             IServerDispatcherStrategy serverDispatcher = ChooseStrategy(session);
@@ -173,6 +179,36 @@ namespace ArchBench.PlugIns.Broker
         {
             clientResponse.Status = serverResponse.StatusCode;
             clientResponse.ContentType = serverResponse.ContentType;
+            
+        }
+
+        private bool IgnoreHeader(string headerKey)
+        {
+            switch(headerKey.ToLower())
+            {
+                case "content-type": return true;
+                case "content-length": return true;
+                case "user-agent": return true;
+                case "referer": return true;
+                case "remote_port": return true;
+                case "remote_addr": return true;
+                case "if-modified-since": return true;
+                case "cookie": return true;
+
+                default: return false;
+
+            }
+        }
+
+        private void SetRequestHeaders(IHttpRequest clientRequest, HttpWebRequest request)
+        {
+            foreach (string headerKey in clientRequest.Headers.AllKeys)
+            {
+                if (IgnoreHeader(headerKey)) continue;
+                var value = clientRequest.Headers[headerKey];
+                request.Headers.Add(headerKey, value);
+
+            }
         }
 
 
@@ -181,14 +217,12 @@ namespace ArchBench.PlugIns.Broker
             HttpWebRequest request = WebRequest.CreateHttp("http://" + _servers[aServer] + clientRequest.UriPath);
             String contentType = clientRequest.Headers["Content-Type"];
 
-
+            SetRequestHeaders(clientRequest, request);
             request.ContentLength = clientRequest.ContentLength;
             request.Method = clientRequest.Method;
             request.UserAgent = clientRequest.Headers["User-Agent"];
             request.CookieContainer = new CookieContainer();
             request.AllowAutoRedirect = false;
-            // request.Headers = aRequest.Headers; TODO dá erro por causa do user Agent
-
 
 
             if (contentType != null) request.ContentType = clientRequest.Headers["Content-Type"];
