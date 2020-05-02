@@ -18,7 +18,7 @@ namespace ArchBench.PlugIns.Broker
         public string Name => "Broker Plugin";
         public string Description => "Broker";
         public string Author => "Gonçalo Passos";
-        public string Version => "0.9";
+        public string Version => "1.0";
 
         #endregion
 

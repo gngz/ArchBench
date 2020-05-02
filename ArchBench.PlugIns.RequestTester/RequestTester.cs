@@ -14,7 +14,7 @@ namespace ArchBench.PlugIns.RequestTester
 
         public string Author => "Gonçalo Passos";
 
-        public string Version => "0.9";
+        public string Version => "1.0";
 
         public bool Enabled { get; set; }
         public IArchBenchPlugInHost Host { get; set; }

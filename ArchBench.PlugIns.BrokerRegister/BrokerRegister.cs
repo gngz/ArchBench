@@ -13,7 +13,7 @@ namespace ArchBench.PlugIns.BrokerRegister
 
         public string Author => "Gonçalo Passos";
 
-        public string Version => "0.9";
+        public string Version => "1.0";
 
         #endregion
 
